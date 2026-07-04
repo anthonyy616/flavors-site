@@ -16,6 +16,8 @@
   <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="supabase-client.js"></script>
+  <script src="auth.js" defer></script>
+
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
   <script src="https://unpkg.com/feather-icons"></script>
 
@@ -267,8 +269,6 @@
       document.getElementById('top-bar').style.boxShadow = window.scrollY > 12 ? '0 4px 24px rgba(61,29,22,0.1)' : 'none';
     }, { passive: true });
 
-    // Use shared Supabase client
-    const supabase = window.supabaseClient;
 
     // Login function
     async function loginUser(event) {
@@ -286,7 +286,7 @@
       submitBtn.disabled = true;
 
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
           email: login_id,
           password: password
         });
@@ -297,7 +297,7 @@
 
         if (data.user) {
           // Fetch user profile
-          const { data: profile, error: profileError } = await supabase
+          const { data: profile, error: profileError } = await supabaseClient
             .from('profiles')
             .select('*')
             .eq('id', data.user.id)
@@ -348,7 +348,7 @@
       resetBtn.disabled = true;
 
       try {
-        const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(resetEmail, {
           redirectTo: `${window.location.origin}/reset-password.html`
         });
 
@@ -402,14 +402,14 @@
     document.getElementById('reset-password').addEventListener('click', resetPassword);
 
     // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         window.location.href = 'index.html';
       }
     });
 
     // Auth state listener
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabaseClient.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
         console.log('User signed in:', session.user.email);
       } else if (event === 'SIGNED_OUT') {

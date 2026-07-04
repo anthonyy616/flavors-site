@@ -1,14 +1,13 @@
 // auth.js - GUARANTEED WORKING VERSION
 console.log(' auth.js loaded - Starting authentication');
 
-const supabase = window.supabaseClient;
 
 // GUARANTEED navigation update
 async function updateNavigation() {
     console.log(' UPDATING NAVIGATION...');
 
     try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await supabaseClient.auth.getSession();
 
         const navSection = document.getElementById('nav-auth-section');
         const mobileSection = document.getElementById('mobile-auth-section');
@@ -77,7 +76,7 @@ async function updateNavigation() {
 
 // Logout function
 async function logout() {
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
     window.location.href = 'index.html';
 }
 
@@ -86,7 +85,7 @@ function initAuth() {
     updateNavigation();
 
     // Listen for auth state changes (e.g., login/logout from other tabs or immediate updates)
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabaseClient.auth.onAuthStateChange((event, session) => {
         console.log(`Auth state changed: ${event}`);
         updateNavigation();
     });
