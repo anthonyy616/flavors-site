@@ -1,275 +1,339 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html class="scroll-smooth" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Flavors Sweet Slice</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Login - Flavors Sweet Slice</title>
+  <meta name="description" content="Login to your Flavors Sweet Slice account."/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      background-color: #FDF9F3;
+      color: #3D1D16;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Glass header */
+    .glass-header {
+      background: rgba(253, 249, 243, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(213, 194, 191, 0.3);
+    }
+
+    /* Card ambient shadow */
+    .card-shadow {
+      box-shadow: 0 4px 32px rgba(61,29,22,0.07), 0 1px 4px rgba(61,29,22,0.04);
+    }
+
+    /* Material Symbols */
+    .sym { font-family: 'Material Symbols Outlined'; user-select: none; }
+    .sym-fill { font-variation-settings: 'FILL' 1; }
+
+    /* Reveal animation */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px 28px; border-radius: 9999px;
+      background: #3D1D16; color: #fff;
+      font-family: 'Inter',sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 0.02em;
+      border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 4px 16px rgba(61,29,22,0.25);
+    }
+    .btn-primary:hover { background: #230904; }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:disabled { background: #837470; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Input fields */
+    .input-field {
+      width: 100%; padding: 12px 16px;
+      background: #F0EDED; border: 1.5px solid transparent; border-radius: 0.75rem;
+      font-family: 'Manrope', sans-serif; font-size: 15px; color: #3D1D16;
+      outline: none; transition: border-color 0.2s, background 0.2s;
+    }
+    .input-field::placeholder { color: #837470; }
+    .input-field:focus { border-color: #3D1D16; background: #fff; }
+
+    .nav-link {
+      font-family: 'Inter',sans-serif; font-size: 14px; font-weight: 600;
+      color: #3D1D16; text-decoration: none; position: relative; transition: opacity 0.2s;
+    }
+    .nav-link.muted { color: #605e5a; }
+    .nav-link::after {
+      content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px;
+      background:#C8102E; border-radius:2px; transition: width 0.25s;
+    }
+    .nav-link:hover::after, .nav-link.active::after { width:100%; }
+
+  </style>
 </head>
 
-<body class="bg-amber-50">
-    <!-- Navigation -->
-    <nav class="bg-amber-800 text-white sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <i data-feather="cake" class="text-amber-300"></i>
-                <h1 class="text-xl font-bold">Flavors Sweet Slice</h1>
-            </div>
-            <div class="flex items-center space-x-4">
-                <a href="login.html" class="bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-full transition">Login</a>
-                <a href="signup.html" class="hover:text-amber-300 transition">Sign Up</a>
-            </div>
-        </div>
-    </nav>
+<body>
+
+<!-- TOP APP BAR -->
+<header id="top-bar" class="glass-header fixed top-0 w-full z-50 h-16 flex items-center justify-between px-5 md:px-8 transition-shadow duration-300">
+  <div class="flex items-center gap-4">
+    <a href="homepage.html" class="font-bold text-[18px] tracking-tight text-[#3D1D16] leading-none" style="font-family:'Manrope',sans-serif;">Flavors Sweet Slice</a>
+  </div>
+  <nav class="hidden md:flex gap-8 items-center">
+    <a href="homepage.html" class="nav-link muted">Home</a>
+    <a href="menu.html" class="nav-link muted">Menu</a>
+    <a href="design.html" class="nav-link muted">Custom</a>
+    <a href="cart.html" class="nav-link muted">Cart</a>
+  </nav>
+  <div class="flex items-center gap-3">
+    <a href="signup.html" class="font-medium text-[13px] text-[#605e5a] hover:text-[#3D1D16] transition-colors" style="font-family:'Inter',sans-serif;">Sign Up</a>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="flex-grow pt-24 pb-20 flex items-center justify-center px-5">
+  
+  <div class="bg-white rounded-2xl card-shadow w-full max-w-md p-8 md:p-10 reveal in">
+    
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style="background:#3d1d16; box-shadow:0 0 0 4px rgba(61,29,22,0.08);">
+        <span class="sym sym-fill text-white" style="font-size:24px;">lock</span>
+      </div>
+      <h1 class="font-bold text-[28px] text-[#3D1D16] tracking-tight mb-2" style="font-family:'Manrope',sans-serif;">Welcome Back</h1>
+      <p class="text-[14px] text-[#605e5a]" style="font-family:'Manrope',sans-serif;">Sign in to continue to Flavors Sweet Slice</p>
+    </div>
 
     <!-- Login Form -->
-    <section class="py-16 min-h-screen flex items-center justify-center">
-        <div class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full" data-aos="fade-up">
-            <h2 class="text-3xl font-bold text-center mb-8 text-amber-800">Welcome Back</h2>
+    <form id="login-form" class="flex flex-col gap-5">
+      <div>
+        <label for="login_id" class="block text-[13px] font-semibold text-[#605e5a] mb-1.5" style="font-family:'Inter',sans-serif;">Email Address</label>
+        <input type="email" id="login_id" required placeholder="Enter your email" class="input-field">
+      </div>
 
-            <form id="login-form" class="space-y-6">
-                <div>
-                    <label for="login_id" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                    <input type="text" id="login_id" required placeholder="Enter your email"
-                        class="w-full px-4 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-                </div>
+      <div>
+        <label for="password" class="block text-[13px] font-semibold text-[#605e5a] mb-1.5" style="font-family:'Inter',sans-serif;">Password</label>
+        <input type="password" id="password" required placeholder="••••••••" class="input-field">
+      </div>
 
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                    <input type="password" id="password" required
-                        class="w-full px-4 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-                </div>
+      <div class="flex items-center justify-between mt-1">
+        <label class="flex items-center cursor-pointer group">
+          <input type="checkbox" id="remember-me" class="rounded border-[#d5c2bf] text-[#3D1D16] focus:ring-[#3D1D16] w-4 h-4 transition-colors">
+          <span class="ml-2 text-[13px] text-[#605e5a] group-hover:text-[#3D1D16] transition-colors" style="font-family:'Inter',sans-serif;">Remember me</span>
+        </label>
+        <a href="#" id="forgot-password-link" class="text-[13px] font-semibold text-[#C8102E] hover:opacity-80 transition-opacity" style="font-family:'Inter',sans-serif;">Forgot password?</a>
+      </div>
 
-                <div class="flex items-center justify-between">
-                    <label class="flex items-center">
-                        <input type="checkbox" id="remember-me"
-                            class="rounded border-amber-300 text-amber-600 focus:ring-amber-500">
-                        <span class="ml-2 text-sm text-gray-600">Remember me</span>
-                    </label>
+      <button type="submit" class="btn-primary w-full mt-2" style="padding:14px; font-size:15px;">Sign In</button>
+    </form>
 
-                    <a href="#" id="forgot-password-link" class="text-sm text-amber-600 hover:text-amber-700">
-                        Forgot password?
-                    </a>
-                </div>
+    <!-- Forgot Password Form -->
+    <form id="forgot-password-form" class="hidden flex flex-col gap-5">
+      <div>
+        <label for="reset-email" class="block text-[13px] font-semibold text-[#605e5a] mb-1.5" style="font-family:'Inter',sans-serif;">Email Address</label>
+        <input type="email" id="reset-email" required placeholder="Enter your email" class="input-field">
+      </div>
 
-                <button type="submit"
-                    class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg transition transform hover:scale-[1.02]">
-                    Login
-                </button>
-            </form>
+      <button type="button" id="reset-password" class="btn-primary w-full mt-2" style="padding:14px; font-size:15px;">Send Reset Link</button>
 
-            <!-- Forgot Password Form -->
-            <div id="forgot-password-form" class="hidden space-y-6">
-                <h3 class="text-xl font-bold text-center text-amber-800">Reset Password</h3>
-                <p class="text-sm text-gray-600 text-center">Enter your email address and we'll send you a password
-                    reset link.</p>
+      <div class="text-center mt-2">
+        <a href="#" id="back-to-login" class="text-[13px] font-semibold text-[#605e5a] hover:text-[#3D1D16] transition-colors" style="font-family:'Inter',sans-serif;">← Back to login</a>
+      </div>
+    </form>
 
-                <div>
-                    <label for="reset-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                    <input type="email" id="reset-email" required
-                        class="w-full px-4 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-                </div>
+    <div id="status" class="mt-5 p-3.5 rounded-xl text-center hidden text-[13px] font-semibold" style="font-family:'Inter',sans-serif;"></div>
 
-                <button id="reset-password"
-                    class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg transition">
-                    Send Reset Link
-                </button>
+    <div class="mt-8 text-center pt-6 border-t" style="border-color:rgba(213,194,191,0.3);">
+      <p class="text-[14px] text-[#605e5a]" style="font-family:'Manrope',sans-serif;">
+        Don't have an account? 
+        <a href="signup.html" class="font-semibold text-[#C8102E] hover:opacity-80 transition-opacity ml-1">Sign up</a>
+      </p>
+    </div>
 
-                <div class="text-center">
-                    <a href="#" id="back-to-login" class="text-sm text-amber-600 hover:text-amber-700">
-                        ← Back to Login
-                    </a>
-                </div>
-            </div>
+  </div>
+</main>
 
-            <div class="mt-6 text-center">
-                <p class="text-gray-600">Don't have an account?
-                    <a href="signup.html" class="text-amber-600 hover:text-amber-700 font-medium">Sign up here</a>
-                </p>
-            </div>
+<script>
+  /* ── Nav shadow ─── */
+  window.addEventListener('scroll', () => {
+    document.getElementById('top-bar').style.boxShadow = window.scrollY > 12 ? '0 4px 24px rgba(61,29,22,0.1)' : 'none';
+  }, { passive: true });
 
-            <div id="status" class="mt-4 p-3 rounded-lg text-center hidden"></div>
-        </div>
-    </section>
+  // Supabase Configuration
+  const supabaseUrl = env.SUPABASE_URL;
+  const supabaseKey = env.SUPABASE_KEY;
 
-    <script>
-        // Initialize Feather Icons
-        feather.replace();
+  // Initialize Supabase client correctly
+  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+      auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+      }
+  });
 
-        // Initialize AOS
-        if (typeof AOS !== 'undefined') {
-            AOS.init({ duration: 800, easing: 'ease-in-out' });
-        }
+  // Login function
+  async function loginUser(event) {
+      event.preventDefault();
 
-        // Supabase Configuration
-        const supabaseUrl = env.SUPABASE_URL;
-        const supabaseKey = env.SUPABASE_KEY;
+      const login_id = document.getElementById('login_id').value.trim();
+      const password = document.getElementById('password').value;
+      const rememberMe = document.getElementById('remember-me').checked;
+      const statusDiv = document.getElementById('status');
 
-        // Initialize Supabase client correctly
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true,
-                detectSessionInUrl: true
-            }
-        });
+      // Show loading state
+      const submitBtn = event.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Signing in...';
+      submitBtn.disabled = true;
 
-        // Login function
-        async function loginUser(event) {
-            event.preventDefault();
+      try {
+          const { data, error } = await supabase.auth.signInWithPassword({
+              email: login_id,
+              password: password
+          });
 
-            const login_id = document.getElementById('login_id').value.trim();
-            const password = document.getElementById('password').value;
-            const rememberMe = document.getElementById('remember-me').checked;
-            const statusDiv = document.getElementById('status');
+          if (error) {
+              throw new Error(error.message);
+          }
 
-            // Show loading state
-            const submitBtn = event.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Logging in...';
-            submitBtn.disabled = true;
+          if (data.user) {
+              // Fetch user profile
+              const { data: profile, error: profileError } = await supabase
+                  .from('profiles')
+                  .select('*')
+                  .eq('id', data.user.id)
+                  .single();
 
-            try {
-                // Sign in with email/password (Supabase doesn't support phone login directly)
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: login_id, // Only email login supported in signInWithPassword
-                    password: password
-                });
+              // Store profile locally (even if there's an error fetching it)
+              if (!profileError && profile) {
+                  localStorage.setItem('userProfile', JSON.stringify(profile));
+              }
 
-                if (error) {
-                    throw new Error(error.message);
-                }
+              // Store session preference
+              if (rememberMe) {
+                  localStorage.setItem('rememberMe', 'true');
+              }
 
-                if (data.user) {
-                    // Fetch user profile
-                    const { data: profile, error: profileError } = await supabase
-                        .from('profiles')
-                        .select('*')
-                        .eq('id', data.user.id)
-                        .single();
+              // Show success message
+              statusDiv.className = 'mt-5 p-3.5 rounded-xl text-center bg-green-50 text-green-700 text-[13px] font-semibold';
+              statusDiv.innerHTML = 'Logged in successfully. Redirecting...';
+              statusDiv.classList.remove('hidden');
 
-                    // Store profile locally (even if there's an error fetching it)
-                    if (!profileError && profile) {
-                        localStorage.setItem('userProfile', JSON.stringify(profile));
-                    }
+              // Redirect after success
+              setTimeout(() => {
+                  window.location.href = 'homepage.html';
+              }, 1000);
+          }
 
-                    // Store session preference
-                    if (rememberMe) {
-                        localStorage.setItem('rememberMe', 'true');
-                    }
+      } catch (error) {
+          statusDiv.className = 'mt-5 p-3.5 rounded-xl text-center bg-red-50 text-red-700 text-[13px] font-semibold';
+          statusDiv.textContent = error.message;
+          statusDiv.classList.remove('hidden');
+      } finally {
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+      }
+  }
 
-                    // Show success message
-                    statusDiv.className = 'mt-4 p-3 rounded-lg text-center bg-green-100 text-green-700';
-                    statusDiv.innerHTML = '<strong>Success!</strong> Logged in successfully. Redirecting...';
-                    statusDiv.classList.remove('hidden');
+  // Password reset function
+  async function resetPassword(event) {
+      event.preventDefault();
 
-                    // Redirect after success
-                    setTimeout(() => {
-                        window.location.href = 'homepage.html';
-                    }, 1000);
-                }
+      const resetEmail = document.getElementById('reset-email').value.trim();
+      const statusDiv = document.getElementById('status');
+      const resetBtn = document.getElementById('reset-password');
 
-            } catch (error) {
-                statusDiv.className = 'mt-4 p-3 rounded-lg text-center bg-red-100 text-red-700';
-                statusDiv.textContent = `Error: ${error.message}`;
-                statusDiv.classList.remove('hidden');
-            } finally {
-                // Reset button state
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            }
-        }
+      // Show loading state
+      const originalText = resetBtn.textContent;
+      resetBtn.textContent = 'Sending...';
+      resetBtn.disabled = true;
 
-        // Password reset function
-        async function resetPassword(event) {
-            event.preventDefault();
+      try {
+          const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+              redirectTo: `${window.location.origin}/reset-password.html`
+          });
 
-            const resetEmail = document.getElementById('reset-email').value.trim();
-            const statusDiv = document.getElementById('status');
-            const resetBtn = document.getElementById('reset-password');
+          if (error) {
+              throw new Error(error.message);
+          }
 
-            // Show loading state
-            const originalText = resetBtn.textContent;
-            resetBtn.textContent = 'Sending...';
-            resetBtn.disabled = true;
+          statusDiv.className = 'mt-5 p-3.5 rounded-xl text-center bg-green-50 text-green-700 text-[13px] font-semibold';
+          statusDiv.textContent = 'Password reset link sent to your email!';
+          statusDiv.classList.remove('hidden');
 
-            try {
-                const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-                    redirectTo: `${window.location.origin}/reset-password.html`
-                });
+          setTimeout(() => { showLoginForm(); }, 3000);
 
-                if (error) {
-                    throw new Error(error.message);
-                }
+      } catch (error) {
+          statusDiv.className = 'mt-5 p-3.5 rounded-xl text-center bg-red-50 text-red-700 text-[13px] font-semibold';
+          statusDiv.textContent = error.message;
+          statusDiv.classList.remove('hidden');
+      } finally {
+          resetBtn.textContent = originalText;
+          resetBtn.disabled = false;
+      }
+  }
 
-                statusDiv.className = 'mt-4 p-3 rounded-lg text-center bg-green-100 text-green-700';
-                statusDiv.textContent = 'Password reset link sent to your email!';
-                statusDiv.classList.remove('hidden');
+  // Form visibility functions
+  function showForgotPasswordForm() {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('forgot-password-form').classList.remove('hidden');
+      document.getElementById('status').classList.add('hidden');
+      document.querySelector('h1').textContent = 'Reset Password';
+      document.querySelector('.text-\\[14px\\]').textContent = 'Enter your email to receive a reset link';
+  }
 
-                // Switch back to login form after 3 seconds
-                setTimeout(() => {
-                    showLoginForm();
-                }, 3000);
+  function showLoginForm() {
+      document.getElementById('forgot-password-form').classList.add('hidden');
+      document.getElementById('login-form').classList.remove('hidden');
+      document.getElementById('status').classList.add('hidden');
+      document.querySelector('h1').textContent = 'Welcome Back';
+      document.querySelector('.text-\\[14px\\]').textContent = 'Sign in to continue to Flavors Sweet Slice';
+  }
 
-            } catch (error) {
-                statusDiv.className = 'mt-4 p-3 rounded-lg text-center bg-red-100 text-red-700';
-                statusDiv.textContent = `Error: ${error.message}`;
-                statusDiv.classList.remove('hidden');
-            } finally {
-                resetBtn.textContent = originalText;
-                resetBtn.disabled = false;
-            }
-        }
+  // Event listeners
+  document.getElementById('login-form').addEventListener('submit', loginUser);
+  document.getElementById('forgot-password-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      showForgotPasswordForm();
+  });
+  document.getElementById('back-to-login').addEventListener('click', (e) => {
+      e.preventDefault();
+      showLoginForm();
+  });
+  document.getElementById('reset-password').addEventListener('click', resetPassword);
 
-        // Form visibility functions
-        function showForgotPasswordForm() {
-            document.getElementById('login-form').classList.add('hidden');
-            document.getElementById('forgot-password-form').classList.remove('hidden');
-            document.getElementById('status').classList.add('hidden');
-        }
+  // Check if user is already logged in
+  supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+          window.location.href = 'homepage.html';
+      }
+  });
 
-        function showLoginForm() {
-            document.getElementById('forgot-password-form').classList.add('hidden');
-            document.getElementById('login-form').classList.remove('hidden');
-            document.getElementById('status').classList.add('hidden');
-        }
-
-        // Event listeners
-        document.getElementById('login-form').addEventListener('submit', loginUser);
-        document.getElementById('forgot-password-link').addEventListener('click', (e) => {
-            e.preventDefault();
-            showForgotPasswordForm();
-        });
-        document.getElementById('back-to-login').addEventListener('click', (e) => {
-            e.preventDefault();
-            showLoginForm();
-        });
-        document.getElementById('reset-password').addEventListener('click', resetPassword);
-
-        // Check if user is already logged in
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session) {
-                window.location.href = 'homepage.html';
-            }
-        });
-
-        // Auth state listener
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' && session) {
-                console.log('User signed in:', session.user.email);
-            } else if (event === 'SIGNED_OUT') {
-                console.log('User signed out');
-                localStorage.removeItem('userProfile');
-            }
-        });
-    </script>
-    <script src="auth.js" defer></script>
+  // Auth state listener
+  supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+          console.log('User signed in:', session.user.email);
+      } else if (event === 'SIGNED_OUT') {
+          console.log('User signed out');
+          localStorage.removeItem('userProfile');
+      }
+  });
+</script>
+<script src="auth.js" defer></script>
 </body>
-
 </html>

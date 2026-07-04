@@ -1,458 +1,603 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html class="scroll-smooth" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Design Your Cake - Flavors Sweet Slice</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Design Your Cake - Flavors Sweet Slice</title>
+  <meta name="description" content="Create a custom artisanal cake uniquely yours."/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      background-color: #FDF9F3;
+      color: #3D1D16;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Glass header */
+    .glass-header {
+      background: rgba(253, 249, 243, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(213, 194, 191, 0.3);
+    }
+
+    /* Card ambient shadow */
+    .card-shadow {
+      box-shadow: 0 4px 24px rgba(61,29,22,0.06), 0 1px 3px rgba(61,29,22,0.04);
+    }
+
+    .sym { font-family: 'Material Symbols Outlined'; user-select: none; }
+    .sym-fill { font-variation-settings: 'FILL' 1; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 28px; border-radius: 9999px;
+      background: #3D1D16; color: #fff;
+      font-family: 'Inter',sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 0.02em;
+      border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 4px 16px rgba(61,29,22,0.25);
+    }
+    .btn-primary:hover { background: #230904; }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 28px; border-radius: 9999px;
+      background: #fff; color: #3D1D16;
+      font-family: 'Inter',sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 0.02em;
+      border: 1.5px solid #d5c2bf; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: #3D1D16; color: #3D1D16; }
+    .btn-secondary:active { transform: scale(0.97); }
+
+    /* Custom form elements */
+    .input-field {
+      width: 100%; padding: 12px 16px;
+      background: #F0EDED; border: 1.5px solid transparent; border-radius: 0.75rem;
+      font-family: 'Manrope', sans-serif; font-size: 15px; color: #3D1D16;
+      outline: none; transition: border-color 0.2s, background 0.2s;
+    }
+    .input-field::placeholder { color: #837470; }
+    .input-field:focus { border-color: #3D1D16; background: #fff; }
+
+    /* Custom pill radio buttons */
+    .pill-radio-input:checked + .pill-radio-label {
+      background: #3D1D16; color: #fff; border-color: #3D1D16;
+    }
+    .pill-radio-label {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 12px 8px; border-radius: 0.75rem;
+      border: 1.5px solid #d5c2bf; background: #fff;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .pill-radio-label:hover { border-color: #3D1D16; }
+
+    /* Nav links */
+    .nav-link {
+      font-family: 'Inter',sans-serif; font-size: 14px; font-weight: 600;
+      color: #3D1D16; text-decoration: none; position: relative; transition: opacity 0.2s;
+    }
+    .nav-link.muted { color: #605e5a; }
+    .nav-link::after {
+      content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px;
+      background:#C8102E; border-radius:2px; transition: width 0.25s;
+    }
+    .nav-link:hover::after, .nav-link.active::after { width:100%; }
+
+    .bottom-nav-item { transition: color 0.2s, transform 0.15s; }
+    .bottom-nav-item:active { transform: scale(0.88); }
+  </style>
 </head>
 
-<body class="bg-amber-50">
-    <!-- Navigation -->
-    <!-- Navigation -->
-    <nav class="bg-amber-800 text-white sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <i data-feather="cake" class="text-amber-300"></i>
-                <a href="homepage.html" class="text-xl font-bold">Delicious Cakes</a>
-            </div>
+<body>
 
-            <div class="hidden md:flex space-x-6">
-                <a href="homepage.html" class="hover:text-amber-300 transition">Home</a>
-                <a href="menu.html" class="hover:text-amber-300 transition">Menu</a>
-                <a href="design.html" class="hover:text-amber-300 transition">Design Your Cake</a>
-                <a href="cart.html" class="hover:text-amber-300 transition">Cart</a>
-            </div>
+<!-- TOP APP BAR -->
+<header id="top-bar" class="glass-header fixed top-0 w-full z-50 h-16 flex items-center justify-between px-5 md:px-8 transition-shadow duration-300">
+  <div class="flex items-center gap-4">
+    <button id="menu-btn" aria-label="Open menu" class="sym text-[#3D1D16] hover:opacity-70 active:scale-90 transition-all cursor-pointer">menu</button>
+    <a href="homepage.html" class="font-bold text-[18px] tracking-tight text-[#3D1D16] leading-none" style="font-family:'Manrope',sans-serif;">Flavors Sweet Slice</a>
+  </div>
+  <nav class="hidden md:flex gap-8 items-center">
+    <a href="homepage.html" class="nav-link muted">Home</a>
+    <a href="menu.html" class="nav-link muted">Menu</a>
+    <a href="design.html" class="nav-link active">Custom</a>
+    <a href="cart.html" class="nav-link muted">Cart</a>
+  </nav>
+  <!-- Auth section populated by auth.js -->
+  <div id="nav-auth-section" class="flex items-center gap-3">
+    <a href="login.html" class="font-medium text-[13px] text-[#605e5a] hover:text-[#3D1D16] transition-colors hidden md:block" style="font-family:'Inter',sans-serif;">Login</a>
+    <a href="signup.html" class="btn-primary" style="padding:10px 20px;font-size:13px;">Sign Up</a>
+  </div>
+</header>
 
-            <!-- Dynamic Auth Section -->
-            <div id="nav-auth-section">
-                <!-- This will be populated by auth.js -->
-                <div class="flex items-center space-x-4">
-                    <a href="login.html" class="hover:text-amber-300 transition hidden md:block">Login</a>
-                    <a href="signup.html" class="bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-full transition">Sign
-                        Up</a>
-                </div>
-            </div>
-
-            <button id="menu-toggle" class="md:hidden">
-                <i data-feather="menu"></i>
-            </button>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-amber-700 px-4 py-2">
-            <div class="flex flex-col space-y-3">
-                <a href="homepage.html" class="hover:text-amber-300 transition">Home</a>
-                <a href="menu.html" class="hover:text-amber-300 transition">Menu</a>
-                <a href="design.html" class="hover:text-amber-300 transition">Design Your Cake</a>
-                <a href="cart.html" class="hover:text-amber-300 transition">Cart</a>
-                <div id="mobile-auth-section">
-                    <!-- Mobile auth links will be populated by auth.js -->
-                    <a href="login.html" class="hover:text-amber-300 transition">Login</a>
-                </div>
-            </div>
-        </div>
+<!-- Mobile Drawer -->
+<div id="mobile-drawer" class="fixed inset-0 z-[60] pointer-events-none">
+  <div id="drawer-backdrop" class="absolute inset-0 backdrop-blur-sm opacity-0 transition-opacity duration-300" style="background:rgba(61,29,22,0.3);"></div>
+  <aside id="drawer-panel" class="absolute top-0 left-0 h-full w-72 bg-[#FDF9F3] shadow-2xl flex flex-col -translate-x-full" style="transition: transform 0.35s cubic-bezier(0.32,0.72,0,1);">
+    <div class="flex items-center justify-between px-6 h-16 border-b" style="border-color:rgba(213,194,191,0.3);">
+      <span class="font-bold text-[17px] text-[#3D1D16]" style="font-family:'Manrope',sans-serif;">Flavors Sweet Slice</span>
+      <button id="close-drawer" class="sym text-[#605e5a] hover:text-[#3D1D16] transition-colors">close</button>
+    </div>
+    <nav class="flex flex-col gap-1 p-4 mt-2">
+      <a href="homepage.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#605e5a] font-semibold text-sm hover:bg-[#e6e2dc]/40 transition-colors" style="font-family:'Inter',sans-serif;">
+        <span class="sym">home</span> Home
+      </a>
+      <a href="menu.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#605e5a] font-semibold text-sm hover:bg-[#e6e2dc]/40 transition-colors" style="font-family:'Inter',sans-serif;">
+        <span class="sym">menu_book</span> Menu
+      </a>
+      <a href="design.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#3D1D16] font-semibold text-sm" style="font-family:'Inter',sans-serif; background:rgba(230,226,220,0.6);">
+        <span class="sym sym-fill" style="color:#C8102E;">auto_fix_high</span> Custom Order
+      </a>
+      <a href="cart.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#605e5a] font-semibold text-sm hover:bg-[#e6e2dc]/40 transition-colors" style="font-family:'Inter',sans-serif;">
+        <span class="sym">shopping_bag</span> Cart
+      </a>
     </nav>
+    <div id="mobile-auth-section" class="px-4 mt-2 flex flex-col gap-2">
+      <a href="login.html" class="w-full text-center py-3 rounded-xl border text-[#3D1D16] font-semibold text-sm transition-colors hover:bg-[#e6e2dc]/40" style="font-family:'Inter',sans-serif; border-color:#d5c2bf;">Login</a>
+    </div>
+    <div class="mt-auto p-6 border-t" style="border-color:rgba(213,194,191,0.3);">
+      <p class="text-xs text-[#605e5a]" style="font-family:'Inter',sans-serif;">© 2026 Flavors Sweet Slice</p>
+    </div>
+  </aside>
+</div>
 
-    <!-- Design Header -->
-    <section class="py-16 bg-amber-800 text-white">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-4xl font-bold mb-4">Design Your Perfect Cake</h1>
-            <p class="text-xl max-w-2xl mx-auto">Create a custom cake that's uniquely yours for any special occasion</p>
+<!-- MAIN -->
+<main class="pt-24 pb-32 max-w-[1200px] mx-auto px-5 md:px-8">
+  <div class="mb-10 text-center">
+    <h1 class="text-[32px] md:text-[40px] font-bold text-[#3D1D16] tracking-tight mb-2" style="font-family:'Manrope',sans-serif;">Design Your Perfect Cake</h1>
+    <p class="text-[#605e5a]" style="font-family:'Manrope',sans-serif;">Create a custom artisanal cake uniquely yours.</p>
+  </div>
+
+  <form id="cake-design-form">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+      
+      <!-- Left Column - Form -->
+      <div class="bg-white rounded-2xl card-shadow p-6 md:p-8">
+        
+        <!-- Size -->
+        <div class="mb-8">
+          <label class="block text-[14px] font-bold text-[#3D1D16] mb-3" style="font-family:'Inter',sans-serif;">Cake Size (Inches)</label>
+          <div class="grid grid-cols-3 sm:grid-cols-5 gap-3">
+            <!-- Generate size buttons -->
+            <label>
+              <input type="radio" name="size" value="5" class="pill-radio-input hidden">
+              <div class="pill-radio-label">
+                <span class="font-bold text-[16px] mb-1">5"</span>
+                <span class="text-[11px] opacity-80 font-medium">₦15,000</span>
+              </div>
+            </label>
+            <label>
+              <input type="radio" name="size" value="6" class="pill-radio-input hidden" checked>
+              <div class="pill-radio-label">
+                <span class="font-bold text-[16px] mb-1">6"</span>
+                <span class="text-[11px] opacity-80 font-medium">₦26,000</span>
+              </div>
+            </label>
+            <label>
+              <input type="radio" name="size" value="7" class="pill-radio-input hidden">
+              <div class="pill-radio-label">
+                <span class="font-bold text-[16px] mb-1">7"</span>
+                <span class="text-[11px] opacity-80 font-medium">₦34,000</span>
+              </div>
+            </label>
+            <label>
+              <input type="radio" name="size" value="8" class="pill-radio-input hidden">
+              <div class="pill-radio-label">
+                <span class="font-bold text-[16px] mb-1">8"</span>
+                <span class="text-[11px] opacity-80 font-medium">₦42,500</span>
+              </div>
+            </label>
+            <label>
+              <input type="radio" name="size" value="9" class="pill-radio-input hidden">
+              <div class="pill-radio-label">
+                <span class="font-bold text-[16px] mb-1">9"</span>
+                <span class="text-[11px] opacity-80 font-medium">₦47,500</span>
+              </div>
+            </label>
+            <label>
+              <input type="radio" name="size" value="10" class="pill-radio-input hidden">
+              <div class="pill-radio-label">
+                <span class="font-bold text-[16px] mb-1">10"</span>
+                <span class="text-[11px] opacity-80 font-medium">₦56,000</span>
+              </div>
+            </label>
+            <label>
+              <input type="radio" name="size" value="11" class="pill-radio-input hidden">
+              <div class="pill-radio-label">
+                <span class="font-bold text-[16px] mb-1">11"</span>
+                <span class="text-[11px] opacity-80 font-medium">₦68,500</span>
+              </div>
+            </label>
+            <label>
+              <input type="radio" name="size" value="12" class="pill-radio-input hidden">
+              <div class="pill-radio-label">
+                <span class="font-bold text-[16px] mb-1">12"</span>
+                <span class="text-[11px] opacity-80 font-medium">₦72,000</span>
+              </div>
+            </label>
+            <label>
+              <input type="radio" name="size" value="13" class="pill-radio-input hidden">
+              <div class="pill-radio-label">
+                <span class="font-bold text-[16px] mb-1">13"</span>
+                <span class="text-[11px] opacity-80 font-medium">₦80,500</span>
+              </div>
+            </label>
+            <label>
+              <input type="radio" name="size" value="14" class="pill-radio-input hidden">
+              <div class="pill-radio-label">
+                <span class="font-bold text-[16px] mb-1">14"</span>
+                <span class="text-[11px] opacity-80 font-medium">₦85,000</span>
+              </div>
+            </label>
+          </div>
         </div>
-    </section>
 
-    <!-- Design Form -->
-    <section class="py-16">
-        <div class="container mx-auto px-4">
-            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 max-w-4xl mx-auto">
-                <h2 class="text-2xl font-bold mb-6 text-center">Customize Your Cake</h2>
-
-                <form id="cake-design-form">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <!-- Left Column - Form -->
-                        <div>
-                            <!-- Size -->
-                            <div class="mb-6" data-aos="fade-right">
-                                <label class="block text-gray-700 font-bold mb-2">Cake Size (Inches)</label>
-                                <div class="grid grid-cols-3 gap-3">
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="size" value="5" class="hidden">
-                                        <div class="font-bold">5"</div>
-                                        <div class="text-amber-700 font-bold">₦15,000</div>
-                                    </label>
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="size" value="6" class="hidden" checked>
-                                        <div class="font-bold">6"</div>
-                                        <div class="text-amber-700 font-bold">₦26,000</div>
-                                    </label>
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="size" value="7" class="hidden">
-                                        <div class="font-bold">7"</div>
-                                        <div class="text-amber-700 font-bold">₦34,000</div>
-                                    </label>
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="size" value="8" class="hidden">
-                                        <div class="font-bold">8"</div>
-                                        <div class="text-amber-700 font-bold">₦42,500</div>
-                                    </label>
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="size" value="9" class="hidden">
-                                        <div class="font-bold">9"</div>
-                                        <div class="text-amber-700 font-bold">₦47,500</div>
-                                    </label>
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="size" value="10" class="hidden">
-                                        <div class="font-bold">10"</div>
-                                        <div class="text-amber-700 font-bold">₦56,000</div>
-                                    </label>
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="size" value="11" class="hidden">
-                                        <div class="font-bold">11"</div>
-                                        <div class="text-amber-700 font-bold">₦68,500</div>
-                                    </label>
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="size" value="12" class="hidden">
-                                        <div class="font-bold">12"</div>
-                                        <div class="text-amber-700 font-bold">₦72,000</div>
-                                    </label>
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="size" value="13" class="hidden">
-                                        <div class="font-bold">13"</div>
-                                        <div class="text-amber-700 font-bold">₦80,500</div>
-                                    </label>
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="size" value="14" class="hidden">
-                                        <div class="font-bold">14"</div>
-                                        <div class="text-amber-700 font-bold">₦85,000</div>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Color -->
-                            <div class="mb-6" data-aos="fade-right" data-aos-delay="100">
-                                <label for="color" class="block text-gray-700 font-bold mb-2">Cake Color</label>
-                                <input type="text" id="color" name="color"
-                                    placeholder="e.g. Royal blue with gold accents"
-                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            </div>
-
-                            <!-- Flavor -->
-                            <div class="mb-6" data-aos="fade-right" data-aos-delay="200">
-                                <label class="block text-gray-700 font-bold mb-2">Cake Flavor</label>
-                                <div class="grid grid-cols-3 gap-3">
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="flavor" value="Red velvet" class="hidden" checked>
-                                        <div class="font-bold">Red Velvet</div>
-                                    </label>
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="flavor" value="Chocolate" class="hidden">
-                                        <div class="font-bold">Chocolate</div>
-                                    </label>
-                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
-                                        <input type="radio" name="flavor" value="Vanilla" class="hidden">
-                                        <div class="font-bold">Vanilla</div>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Icing -->
-                            <div class="mb-6" data-aos="fade-right" data-aos-delay="300">
-                                <label class="block text-gray-700 font-bold mb-2">Special Icing (+₦5,500)</label>
-                                <div class="flex items-center">
-                                    <label class="inline-flex items-center mr-6">
-                                        <input type="radio" name="icing" value="yes" class="form-radio text-amber-600">
-                                        <span class="ml-2">Yes</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="radio" name="icing" value="no" class="form-radio text-amber-600"
-                                            checked>
-                                        <span class="ml-2">No</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Decorations -->
-                            <div class="mb-6" data-aos="fade-right" data-aos-delay="400">
-                                <label for="decorations" class="block text-gray-700 font-bold mb-2">Additional
-                                    Decorations</label>
-                                <textarea id="decorations" name="decorations" rows="3"
-                                    placeholder="Describe any additional decorations (e.g., flowers, messages, figurines)"
-                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
-                            </div>
-                        </div>
-
-                        <!-- Right Column - Preview and Price -->
-                        <div>
-                            <div class="sticky top-24">
-                                <!-- Preview -->
-                                <div class="bg-amber-100 rounded-lg p-6 mb-6" data-aos="fade-left">
-                                    <h3 class="text-xl font-bold mb-4">Cake Preview</h3>
-                                    <div class="bg-white rounded-lg p-4 flex items-center justify-center h-64">
-                                        <!-- Replace the entire inner <div class="text-center"> ... </div> with this <img> tag from my code -->
-                                        <img id="cake-preview-img" src="" alt="Cake preview"
-                                            class="w-full rounded-lg shadow-lg" style="display: none;">
-                                    </div>
-                                    <div class="mt-4">
-                                        <p class="font-bold">Size: <span id="preview-size">6"</span></p>
-                                        <p class="font-bold">Color: <span id="preview-color">-</span></p>
-                                        <p class="font-bold">Flavor: <span id="preview-flavor">Red Velvet</span></p>
-                                        <p class="font-bold">Icing: <span id="preview-icing">No</span></p>
-                                        <p class="font-bold">Decorations: <span id="preview-decorations">None</span></p>
-                                    </div>
-                                    <!-- Paste this button here, right after the <div class="mt-4"> ... </div> closing tag, to trigger the image generation -->
-                                    <button type="button" id="generate-preview-btn"
-                                        class="w-full bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition mt-4">
-                                        Generate Preview Image
-                                    </button>
-                                </div>
-
-                                <!-- Paste this script link at the very end, right after the closing </div> of the preview div -->
-                                <script src="design.js"></script>
-                                <!-- Price Calculation -->
-                                <div class="bg-amber-800 text-white rounded-lg p-6" data-aos="fade-left"
-                                    data-aos-delay="100">
-                                    <h3 class="text-xl font-bold mb-4">Price Summary</h3>
-                                    <div class="space-y-2 mb-4">
-                                        <div class="flex justify-between">
-                                            <span id="base-price-label">Base Price (6"):</span>
-                                            <span id="base-price-value">₦26,000</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>Special Icing:</span>
-                                            <span id="icing-price-value">₦0</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>Decorations:</span>
-                                            <span id="decorations-price-value">₦0</span>
-                                        </div>
-                                    </div>
-                                    <div class="border-t border-amber-600 pt-2 flex justify-between font-bold text-lg">
-                                        <span>Total:</span>
-                                        <span id="total-price">₦26,000</span>
-                                    </div>
-                                    <button type="submit"
-                                        class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg mt-6 transition transform hover:scale-[1.02]">Add
-                                        to Cart - ₦26,000</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
+        <!-- Color -->
+        <div class="mb-8">
+          <label for="color" class="block text-[14px] font-bold text-[#3D1D16] mb-3" style="font-family:'Inter',sans-serif;">Cake Color</label>
+          <input type="text" id="color" name="color" placeholder="e.g. Royal blue with gold accents" class="input-field">
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="bg-amber-900 text-white py-12">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Flavors Sweet Slice</h3>
-                    <p class="text-amber-200">Creating sweet memories with every bite since 2019.</p>
-                </div>
+        <!-- Flavor -->
+        <div class="mb-8">
+          <label class="block text-[14px] font-bold text-[#3D1D16] mb-3" style="font-family:'Inter',sans-serif;">Cake Flavor</label>
+          <div class="grid grid-cols-3 gap-3">
+            <label>
+              <input type="radio" name="flavor" value="Red velvet" class="pill-radio-input hidden" checked>
+              <div class="pill-radio-label">
+                <span class="font-bold text-[14px]">Red Velvet</span>
+              </div>
+            </label>
+            <label>
+              <input type="radio" name="flavor" value="Chocolate" class="pill-radio-input hidden">
+              <div class="pill-radio-label">
+                <span class="font-bold text-[14px]">Chocolate</span>
+              </div>
+            </label>
+            <label>
+              <input type="radio" name="flavor" value="Vanilla" class="pill-radio-input hidden">
+              <div class="pill-radio-label">
+                <span class="font-bold text-[14px]">Vanilla</span>
+              </div>
+            </label>
+          </div>
+        </div>
 
-                <div>
-                    <h4 class="font-bold mb-4">Quick Links</h4>
-                    <ul class="space-y-2">
-                        <li><a href="homepage.html" class="text-amber-200 hover:text-white transition">Home</a></li>
-                        <li><a href="menu.html" class="text-amber-200 hover:text-white transition">Menu</a></li>
-                        <li><a href="design.html" class="text-amber-200 hover:text-white transition">Design Your
-                                Cake</a></li>
-                        <li><a href="cart.html" class="text-amber-200 hover:text-white transition">Cart</a></li>
-                    </ul>
-                </div>
+        <!-- Icing -->
+        <div class="mb-8">
+          <label class="block text-[14px] font-bold text-[#3D1D16] mb-3" style="font-family:'Inter',sans-serif;">Special Icing (+₦5,500)</label>
+          <div class="flex items-center gap-6">
+            <label class="flex items-center cursor-pointer group">
+              <input type="radio" name="icing" value="yes" class="form-radio text-[#3D1D16] focus:ring-[#3D1D16] w-4 h-4 transition-colors">
+              <span class="ml-2 text-[14px] font-medium text-[#605e5a] group-hover:text-[#3D1D16]" style="font-family:'Inter',sans-serif;">Yes</span>
+            </label>
+            <label class="flex items-center cursor-pointer group">
+              <input type="radio" name="icing" value="no" class="form-radio text-[#3D1D16] focus:ring-[#3D1D16] w-4 h-4 transition-colors" checked>
+              <span class="ml-2 text-[14px] font-medium text-[#605e5a] group-hover:text-[#3D1D16]" style="font-family:'Inter',sans-serif;">No</span>
+            </label>
+          </div>
+        </div>
 
-                <div>
-                    <h4 class="font-bold mb-4">Contact Us</h4>
-                    <ul class="space-y-2 text-amber-200">
-                        <li class="flex items-center">
-                            <i data-feather="map-pin" class="mr-2"></i>
-                            Ajah, Lagos
-                        </li>
-                        <li class="flex items-center">
-                            <i data-feather="phone" class="mr-2"></i>
-                            +234 813 954 3355
-                        </li>
-                        <li class="flex items-center">
-                            <i data-feather="mail" class="mr-2"></i>
-                            flavorsweetsliceng@gmail.com
-                        </li>
-                    </ul>
-                </div>
+        <!-- Decorations -->
+        <div class="mb-4">
+          <label for="decorations" class="block text-[14px] font-bold text-[#3D1D16] mb-3" style="font-family:'Inter',sans-serif;">Additional Decorations</label>
+          <textarea id="decorations" name="decorations" rows="3" placeholder="Describe any additional decorations (e.g., flowers, messages, figurines)" class="input-field resize-none"></textarea>
+        </div>
 
-                <div>
-                    <h4 class="font-bold mb-4">Follow Us</h4>
-                    <div class="flex space-x-4">
-                        <a href="https://wa.me/+2348139543355"
-                            class="bg-amber-800 hover:bg-amber-700 w-10 h-10 rounded-full flex items-center justify-center transition">
-                            <i data-feather="message-circle"></i>
-                        </a>
-                        <a href="https://instagram.com/flavorsweetslice"
-                            class="bg-amber-800 hover:bg-amber-700 w-10 h-10 rounded-full flex items-center justify-center transition">
-                            <i data-feather="instagram"></i>
-                        </a>
-                    </div>
-                </div>
+      </div>
 
-
-                <div class="border-t border-amber-800 mt-8 pt-8 text-center text-amber-400">
-                    <p>&copy; 2026 Flavors Sweet Slice Cakes. All rights reserved.</p>
-                </div>
+      <!-- Right Column - Preview and Price -->
+      <div class="lg:sticky lg:top-24">
+        
+        <!-- Preview -->
+        <div class="bg-white rounded-2xl card-shadow p-6 mb-6">
+          <h3 class="text-[20px] font-bold text-[#3D1D16] mb-4" style="font-family:'Manrope',sans-serif;">Cake Preview</h3>
+          
+          <div class="bg-[#F0EDED] rounded-xl flex items-center justify-center min-h-[250px] mb-6 overflow-hidden">
+            <img id="cake-preview-img" src="" alt="Cake preview" class="w-full h-full object-cover rounded-xl" style="display: none;">
+            <div id="cake-preview-placeholder" class="flex flex-col items-center justify-center p-6 text-center text-[#605e5a] opacity-70">
+              <span class="sym" style="font-size:48px; margin-bottom:12px;">image</span>
+              <p style="font-family:'Inter',sans-serif; font-size:13px; font-weight:500;">Click "Generate Preview" to see your design</p>
             </div>
-    </footer>
+          </div>
 
-    <script>
-        // Mobile menu toggle
-        document.getElementById('menu-toggle').addEventListener('click', function () {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        });
+          <div class="grid grid-cols-2 gap-x-4 gap-y-3 mb-6" style="font-family:'Inter',sans-serif; font-size:13px;">
+            <div>
+              <span class="block text-[#605e5a]">Size</span>
+              <span id="preview-size" class="font-bold text-[#3D1D16]">6"</span>
+            </div>
+            <div>
+              <span class="block text-[#605e5a]">Color</span>
+              <span id="preview-color" class="font-bold text-[#3D1D16] truncate block">-</span>
+            </div>
+            <div>
+              <span class="block text-[#605e5a]">Flavor</span>
+              <span id="preview-flavor" class="font-bold text-[#3D1D16]">Red Velvet</span>
+            </div>
+            <div>
+              <span class="block text-[#605e5a]">Special Icing</span>
+              <span id="preview-icing" class="font-bold text-[#3D1D16]">No</span>
+            </div>
+            <div class="col-span-2">
+              <span class="block text-[#605e5a]">Decorations</span>
+              <span id="preview-decorations" class="font-bold text-[#3D1D16] line-clamp-2">None</span>
+            </div>
+          </div>
 
-        // Form interaction
-        document.querySelectorAll('input[name="size"]').forEach(radio => {
-            radio.addEventListener('change', function () {
-                document.getElementById('preview-size').textContent = this.value + '"';
-                updatePrice();
-            });
-        });
+          <button type="button" id="generate-preview-btn" class="btn-secondary w-full py-3.5">
+            <span class="sym">auto_awesome</span> Generate Preview Image
+          </button>
+        </div>
 
-        document.getElementById('color').addEventListener('input', function () {
-            document.getElementById('preview-color').textContent = this.value || '-';
-            updatePrice();
-        });
+        <script src="design.js"></script>
 
-        document.querySelectorAll('input[name="flavor"]').forEach(radio => {
-            radio.addEventListener('change', function () {
-                document.getElementById('preview-flavor').textContent = this.value;
-                updatePrice();
-            });
-        });
+        <!-- Price Summary -->
+        <div class="bg-[#3D1D16] text-white rounded-2xl p-6">
+          <h3 class="text-[20px] font-bold mb-5" style="font-family:'Manrope',sans-serif;">Price Summary</h3>
+          
+          <div class="flex flex-col gap-3 mb-5 text-[14px]" style="font-family:'Inter',sans-serif; color:rgba(255,255,255,0.85);">
+            <div class="flex justify-between">
+              <span id="base-price-label">Base Price (6"):</span>
+              <span id="base-price-value" class="font-semibold text-white">₦26,000</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Special Icing:</span>
+              <span id="icing-price-value" class="font-semibold text-white">₦0</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Decorations:</span>
+              <span id="decorations-price-value" class="font-semibold text-white">₦0</span>
+            </div>
+          </div>
 
-        document.querySelectorAll('input[name="icing"]').forEach(radio => {
-            radio.addEventListener('change', function () {
-                document.getElementById('preview-icing').textContent = this.value === 'yes' ? 'Yes' : 'No';
-                updatePrice();
-            });
-        });
+          <div class="border-t border-white/20 pt-4 flex justify-between font-bold text-[22px] mb-6" style="font-family:'Manrope',sans-serif;">
+            <span>Total:</span>
+            <span id="total-price" style="color:#C8102E;">₦26,000</span>
+          </div>
 
-        document.getElementById('decorations').addEventListener('input', function () {
-            document.getElementById('preview-decorations').textContent = this.value || 'None';
-            updatePrice();
-        });
+          <button type="submit" id="add-to-cart-submit" class="w-full bg-[#C8102E] text-white py-4 rounded-full font-semibold text-[15px] flex items-center justify-center gap-2 transition-transform hover:scale-[0.98]" style="font-family:'Inter',sans-serif;">
+            <span class="sym">shopping_bag</span> Add to Cart - ₦26,000
+          </button>
+        </div>
 
-        function updatePrice() {
-            // Get selected values
-            const size = document.querySelector('input[name="size"]:checked').value;
-            const icing = document.querySelector('input[name="icing"]:checked').value;
-            const decorations = document.getElementById('decorations').value;
+      </div>
+    </div>
+  </form>
+</main>
 
-            // Calculate base price based on size
-            let basePrice = 0;
-            switch (size) {
-                case '5': basePrice = 15000; break;
-                case '6': basePrice = 26000; break;
-                case '7': basePrice = 34000; break;
-                case '8': basePrice = 42500; break;
-                case '9': basePrice = 47500; break;
-                case '10': basePrice = 56000; break;
-                case '11': basePrice = 68500; break;
-                case '12': basePrice = 72000; break;
-                case '13': basePrice = 80500; break;
-                case '14': basePrice = 85000; break;
-            }
 
-            // Calculate icing price
-            const icingPrice = icing === 'yes' ? 5500 : 0;
+<!-- FOOTER -->
+<footer class="border-t py-12 px-5 md:px-8 mb-20 md:mb-0" style="border-color:rgba(213,194,191,0.25); background:#FDF9F3;">
+  <div class="max-w-[1200px] mx-auto flex flex-col items-center text-center gap-5">
+    <h3 class="font-bold text-[20px] text-[#3D1D16]" style="font-family:'Manrope',sans-serif;">Flavors Sweet Slice</h3>
+    <p class="text-[15px] text-[#605e5a] max-w-xs leading-relaxed" style="font-family:'Manrope',sans-serif;">Creating sweet memories with every bite since 2019.</p>
+    <div class="flex gap-3">
+      <a href="https://wa.me/+2348139543355" aria-label="WhatsApp" class="w-10 h-10 rounded-full flex items-center justify-center text-[#3D1D16] transition-all" style="background:#e6e2dc;" onmouseover="this.style.background='#C8102E';this.style.color='#fff'" onmouseout="this.style.background='#e6e2dc';this.style.color='#3D1D16'">
+        <span class="sym" style="font-size:20px;">chat</span>
+      </a>
+      <a href="https://instagram.com/flavorsweetslice" aria-label="Instagram" class="w-10 h-10 rounded-full flex items-center justify-center text-[#3D1D16] transition-all" style="background:#e6e2dc;" onmouseover="this.style.background='#C8102E';this.style.color='#fff'" onmouseout="this.style.background='#e6e2dc';this.style.color='#3D1D16'">
+        <span class="sym" style="font-size:20px;">camera</span>
+      </a>
+    </div>
+    <p class="text-[13px]" style="font-family:'Manrope',sans-serif; color:rgba(96,94,90,0.5);">© 2026 Flavors Sweet Slice. Artisanal Excellence.</p>
+  </div>
+</footer>
 
-            // Calculate decoration price (simple estimation based on text length)
-            let decorationPrice = 0;
-            if (decorations.length > 0) {
-                decorationPrice = Math.min(2000, Math.max(500, decorations.length * 20));
-            }
+<!-- BOTTOM NAV (mobile + tablet) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center h-[68px] px-4 border-t md:hidden"
+     style="background:rgba(253,249,243,0.92); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-color:rgba(213,194,191,0.2);">
+  <a href="homepage.html" class="bottom-nav-item flex flex-col items-center gap-0.5 text-[#605e5a] hover:text-[#3D1D16]">
+    <span class="sym" style="font-size:22px;">home</span>
+    <span class="font-semibold text-[10px] tracking-wide" style="font-family:'Inter',sans-serif;">Home</span>
+  </a>
+  <a href="menu.html" class="bottom-nav-item flex flex-col items-center gap-0.5 text-[#605e5a] hover:text-[#3D1D16]">
+    <span class="sym" style="font-size:22px;">cake</span>
+    <span class="font-semibold text-[10px] tracking-wide" style="font-family:'Inter',sans-serif;">Shop</span>
+  </a>
+  <a href="design.html" class="bottom-nav-item flex flex-col items-center gap-0.5" style="color:#C8102E;">
+    <span class="sym sym-fill" style="font-size:22px;">auto_fix_high</span>
+    <span class="font-semibold text-[10px] tracking-wide" style="font-family:'Inter',sans-serif;">Custom</span>
+  </a>
+  <a href="cart.html" class="bottom-nav-item flex flex-col items-center gap-0.5 text-[#605e5a] hover:text-[#3D1D16]">
+    <span class="sym" style="font-size:22px;">shopping_bag</span>
+    <span class="font-semibold text-[10px] tracking-wide" style="font-family:'Inter',sans-serif;">Cart</span>
+  </a>
+</nav>
 
-            // Calculate total
-            const total = basePrice + icingPrice + decorationPrice;
+<script>
+  /* Nav shadow */
+  window.addEventListener('scroll', () => {
+    document.getElementById('top-bar').style.boxShadow = window.scrollY > 12 ? '0 4px 24px rgba(61,29,22,0.1)' : 'none';
+  }, { passive: true });
 
-            // Update UI
-            document.getElementById('base-price-label').textContent = `Base Price (${size}"):`;
-            document.getElementById('base-price-value').textContent = '₦' + basePrice.toLocaleString();
-            document.getElementById('icing-price-value').textContent = '₦' + icingPrice.toLocaleString();
-            document.getElementById('decorations-price-value').textContent = '₦' + decorationPrice.toLocaleString();
-            document.getElementById('total-price').textContent = '₦' + total.toLocaleString();
-            document.querySelector('button[type="submit"]').textContent = 'Add to Cart - ₦' + total.toLocaleString();
-        }
+  /* Mobile drawer */
+  const menuBtn  = document.getElementById('menu-btn');
+  const closeBtn = document.getElementById('close-drawer');
+  const drawer   = document.getElementById('mobile-drawer');
+  const panel    = document.getElementById('drawer-panel');
+  const backdrop = document.getElementById('drawer-backdrop');
+  function openDrawer() { drawer.style.pointerEvents='auto'; panel.style.transform='translateX(0)'; backdrop.style.opacity='1'; }
+  function closeDrawerFn() { panel.style.transform='translateX(-100%)'; backdrop.style.opacity='0'; setTimeout(()=>{ drawer.style.pointerEvents='none'; },350); }
+  menuBtn.addEventListener('click', openDrawer);
+  closeBtn.addEventListener('click', closeDrawerFn);
+  backdrop.addEventListener('click', closeDrawerFn);
 
-        // Initialize AOS
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out'
-        });
+  // Form interaction
+  document.querySelectorAll('input[name="size"]').forEach(radio => {
+      radio.addEventListener('change', function () {
+          document.getElementById('preview-size').textContent = this.value + '"';
+          updatePrice();
+      });
+  });
 
-        // Initialize Feather Icons
-        feather.replace();
+  document.getElementById('color').addEventListener('input', function () {
+      document.getElementById('preview-color').textContent = this.value || '-';
+      updatePrice();
+  });
 
-        // Add to Cart functionality
-        document.getElementById('cake-design-form').addEventListener('submit', function (e) {
-            e.preventDefault();
+  document.querySelectorAll('input[name="flavor"]').forEach(radio => {
+      radio.addEventListener('change', function () {
+          document.getElementById('preview-flavor').textContent = this.value;
+          updatePrice();
+      });
+  });
 
-            // Get current selections
-            const size = document.querySelector('input[name="size"]:checked').value;
-            const color = document.getElementById('color').value;
-            const flavor = document.querySelector('input[name="flavor"]:checked').value;
-            const icing = document.querySelector('input[name="icing"]:checked').value;
-            const decorations = document.getElementById('decorations').value;
+  document.querySelectorAll('input[name="icing"]').forEach(radio => {
+      radio.addEventListener('change', function () {
+          document.getElementById('preview-icing').textContent = this.value === 'yes' ? 'Yes' : 'No';
+          updatePrice();
+      });
+  });
 
-            // Calculate price (reuse existing logic)
-            let basePrice = 0;
-            switch (size) {
-                case '5': basePrice = 15000; break;
-                case '6': basePrice = 26000; break;
-                case '7': basePrice = 34000; break;
-                case '8': basePrice = 42500; break;
-                case '9': basePrice = 47500; break;
-                case '10': basePrice = 56000; break;
-                case '11': basePrice = 68500; break;
-                case '12': basePrice = 72000; break;
-                case '13': basePrice = 80500; break;
-                case '14': basePrice = 85000; break;
-            }
-            const icingPrice = icing === 'yes' ? 5500 : 0;
-            let decorationPrice = 0;
-            if (decorations.length > 0) {
-                decorationPrice = Math.min(2000, Math.max(500, decorations.length * 20));
-            }
-            const price = basePrice + icingPrice + decorationPrice;
+  document.getElementById('decorations').addEventListener('input', function () {
+      document.getElementById('preview-decorations').textContent = this.value || 'None';
+      updatePrice();
+  });
 
-            // Create item object
-            const item = {
-                type: 'custom',
-                size,
-                color,
-                flavor,
-                icing,
-                decorations,
-                price,
-                quantity: 1
-            };
+  // Intercept the preview img load to hide placeholder
+  document.getElementById('cake-preview-img').addEventListener('load', function() {
+      if (this.src && this.src !== window.location.href) {
+          document.getElementById('cake-preview-placeholder').style.display = 'none';
+          this.style.display = 'block';
+      }
+  });
 
-            // Add to localStorage cart
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            cart.push(item);
-            localStorage.setItem('cart', JSON.stringify(cart));
+  function updatePrice() {
+      // Get selected values
+      const size = document.querySelector('input[name="size"]:checked').value;
+      const icing = document.querySelector('input[name="icing"]:checked').value;
+      const decorations = document.getElementById('decorations').value;
 
-            // Redirect to cart
-            window.location.href = 'cart.html';
-        });
-    </script>
-    <script src="auth.js" defer></script>
+      // Calculate base price based on size
+      let basePrice = 0;
+      switch (size) {
+          case '5': basePrice = 15000; break;
+          case '6': basePrice = 26000; break;
+          case '7': basePrice = 34000; break;
+          case '8': basePrice = 42500; break;
+          case '9': basePrice = 47500; break;
+          case '10': basePrice = 56000; break;
+          case '11': basePrice = 68500; break;
+          case '12': basePrice = 72000; break;
+          case '13': basePrice = 80500; break;
+          case '14': basePrice = 85000; break;
+      }
+
+      // Calculate icing price
+      const icingPrice = icing === 'yes' ? 5500 : 0;
+
+      // Calculate decoration price (simple estimation based on text length)
+      let decorationPrice = 0;
+      if (decorations.length > 0) {
+          decorationPrice = Math.min(2000, Math.max(500, decorations.length * 20));
+      }
+
+      // Calculate total
+      const total = basePrice + icingPrice + decorationPrice;
+
+      // Update UI
+      document.getElementById('base-price-label').textContent = `Base Price (${size}"):`;
+      document.getElementById('base-price-value').textContent = '₦' + basePrice.toLocaleString();
+      document.getElementById('icing-price-value').textContent = '₦' + icingPrice.toLocaleString();
+      document.getElementById('decorations-price-value').textContent = '₦' + decorationPrice.toLocaleString();
+      document.getElementById('total-price').textContent = '₦' + total.toLocaleString();
+      
+      // Update Add to Cart button text
+      const btn = document.getElementById('add-to-cart-submit');
+      if(btn) {
+        btn.innerHTML = `<span class="sym">shopping_bag</span> Add to Cart - ₦${total.toLocaleString()}`;
+      }
+  }
+
+  // Add to Cart functionality
+  document.getElementById('cake-design-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // Get current selections
+      const size = document.querySelector('input[name="size"]:checked').value;
+      const color = document.getElementById('color').value;
+      const flavor = document.querySelector('input[name="flavor"]:checked').value;
+      const icing = document.querySelector('input[name="icing"]:checked').value;
+      const decorations = document.getElementById('decorations').value;
+      const imageSrc = document.getElementById('cake-preview-img').src;
+
+      // Calculate price
+      let basePrice = 0;
+      switch (size) {
+          case '5': basePrice = 15000; break;
+          case '6': basePrice = 26000; break;
+          case '7': basePrice = 34000; break;
+          case '8': basePrice = 42500; break;
+          case '9': basePrice = 47500; break;
+          case '10': basePrice = 56000; break;
+          case '11': basePrice = 68500; break;
+          case '12': basePrice = 72000; break;
+          case '13': basePrice = 80500; break;
+          case '14': basePrice = 85000; break;
+      }
+      const icingPrice = icing === 'yes' ? 5500 : 0;
+      let decorationPrice = 0;
+      if (decorations.length > 0) {
+          decorationPrice = Math.min(2000, Math.max(500, decorations.length * 20));
+      }
+      const price = basePrice + icingPrice + decorationPrice;
+
+      // Create item object
+      const item = {
+          type: 'custom',
+          size,
+          color,
+          flavor,
+          icing,
+          decorations,
+          price,
+          quantity: 1,
+          image: (imageSrc && imageSrc !== window.location.href) ? imageSrc : null
+      };
+
+      // Add to localStorage cart
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.push(item);
+      localStorage.setItem('cart', JSON.stringify(cart));
+
+      // Redirect to cart
+      window.location.href = 'cart.html';
+  });
+
+  /* Load profile info */
+  const profile = JSON.parse(localStorage.getItem("userProfile"));
+  if (profile) {
+    const nav = document.querySelector("#nav-auth-section");
+    if (nav) {
+      nav.innerHTML = `
+        <span style="font-family:'Manrope',sans-serif; color:#605e5a; font-size:14px;">Hi, ${profile.full_name || profile.first_name || "User"}</span>
+        <button id="logout-btn" class="btn-primary" style="padding:10px 20px;font-size:13px;">Logout</button>
+      `;
+    }
+    const mobileAuth = document.querySelector("#mobile-auth-section");
+    if (mobileAuth) {
+      mobileAuth.innerHTML = `
+        <button id="mobile-logout-btn" class="w-full text-center py-3 rounded-xl border text-[#3D1D16] font-semibold text-sm transition-colors hover:bg-[#e6e2dc]/40" style="font-family:'Inter',sans-serif; border-color:#d5c2bf;">Logout</button>
+      `;
+    }
+    
+    document.addEventListener("click", function(e) {
+      if (e.target && (e.target.id === "logout-btn" || e.target.id === "mobile-logout-btn")) {
+        localStorage.removeItem("userProfile");
+        window.location.href = "login.html";
+      }
+    });
+  }
+</script>
+<script src="auth.js" defer></script>
 </body>
-
 </html>
