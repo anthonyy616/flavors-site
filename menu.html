@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Menu - Flavors Sweet Slice</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body class="bg-amber-50">
+    <!-- Navigation -->
+    <!-- Navigation -->
+<nav class="bg-amber-800 text-white sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <i data-feather="cake" class="text-amber-300"></i>
+            <a href="homepage.html" class="text-xl font-bold">Delicious Cakes</a>
+        </div>
+        
+        <div class="hidden md:flex space-x-6">
+            <a href="homepage.html" class="hover:text-amber-300 transition">Home</a>
+            <a href="menu.html" class="hover:text-amber-300 transition">Menu</a>
+            <a href="design.html" class="hover:text-amber-300 transition">Design Your Cake</a>
+            <a href="cart.html" class="hover:text-amber-300 transition">Cart</a>
+        </div>
+        
+        <!-- Dynamic Auth Section -->
+        <div id="nav-auth-section">
+            <!-- This will be populated by auth.js -->
+            <div class="flex items-center space-x-4">
+                <a href="login.html" class="hover:text-amber-300 transition hidden md:block">Login</a>
+                <a href="signup.html" class="bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-full transition">Sign Up</a>
+            </div>
+        </div>
+        
+        <button id="menu-toggle" class="md:hidden">
+            <i data-feather="menu"></i>
+        </button>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-amber-700 px-4 py-2">
+        <div class="flex flex-col space-y-3">
+            <a href="homepage.html" class="hover:text-amber-300 transition">Home</a>
+            <a href="menu.html" class="hover:text-amber-300 transition">Menu</a>
+            <a href="design.html" class="hover:text-amber-300 transition">Design Your Cake</a>
+            <a href="cart.html" class="hover:text-amber-300 transition">Cart</a>
+            <div id="mobile-auth-section">
+                <!-- Mobile auth links will be populated by auth.js -->
+                <a href="login.html" class="hover:text-amber-300 transition">Login</a>
+            </div>
+        </div>
+    </div>
+</nav>
+    <!-- Menu Header -->
+    <section class="py-16 bg-amber-800 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold mb-4">Our Delicious Menu</h1>
+            <p class="text-xl max-w-2xl mx-auto">Explore our selection of expertly crafted cakes, perfect for any celebration</p>
+        </div>
+    </section>
+
+    <!-- Search and Filter -->
+    <section class="py-8 bg-amber-100">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="w-full md:w-1/3">
+                    <div class="relative">
+                        <input type="text" placeholder="Search cakes..." class="w-full px-4 py-2 rounded-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <i data-feather="search" class="absolute right-3 top-2.5 text-amber-600"></i>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap gap-2">
+                    <button class="filter-btn active bg-amber-600 text-white px-4 py-2 rounded-full" data-category="all">All</button>
+                    <button class="filter-btn bg-white text-amber-800 px-4 py-2 rounded-full border border-amber-300 hover:bg-amber-100" data-category="birthday">Birthday</button>
+                    <button class="filter-btn bg-white text-amber-800 px-4 py-2 rounded-full border border-amber-300 hover:bg-amber-100" data-category="celebration">Celebration</button>
+                    <button class="filter-btn bg-white text-amber-800 px-4 py-2 rounded-full border border-amber-300 hover:bg-amber-100" data-category="anniversary">Anniversary</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Items -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="menu-items-container">
+                <!-- All Cakes - Original 6 -->
+                <!-- Cake 1 -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="all" data-aos="fade-up">
+                    <img src="https://i.pinimg.com/736x/50/6f/d4/506fd4b75083b1eab6fefa707df4a9b2.jpg" alt="Chocolate Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold">Chocolate Truffle Cake</h3>
+                            <span class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-sm">Bestseller</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Rich chocolate cake with truffle filling and dark chocolate ganache</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>6 inch (₦40,500)</option>
+                                    <option>8 inch (₦45,800)</option>
+                                    <option>10 inch (₦65,200)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦50,000</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cake 2 -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="all" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://i.pinimg.com/736x/fc/e5/f0/fce5f0c8c041011750889ebb404ff8f8.jpg" alt="Red Velvet Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Red Velvet Cake</h3>
+                        <p class="text-gray-600 mb-4">Classic red velvet with cream cheese frosting and fresh berries</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>6 inch (₦40,500)</option>
+                                    <option>8 inch (₦45,800)</option>
+                                    <option>10 inch (₦65,200)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦40,500</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cake 3 -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="all" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://i.pinimg.com/736x/b9/85/a8/b985a8c4ba4ffd888473442af32b4150.jpg" alt="Vanilla Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Vanilla Dream Cake</h3>
+                        <p class="text-gray-600 mb-4">Light vanilla sponge with buttercream</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>6 inch (₦40,500)</option>
+                                    <option>8 inch (₦45,800)</option>
+                                    <option>10 inch (₦65,200)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦40,500</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cake 4 -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="all" data-aos="fade-up">
+                    <img src="https://i.pinimg.com/736x/54/ac/1f/54ac1ffcefdd234fc8c0dae2a160ced1.jpg" alt="Sponge cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">New York Spongecake</h3>
+                        <p class="text-gray-600 mb-4">Creamy classic spongecake</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>6 inch (₦40,500)</option>
+                                    <option>8 inch (₦45,800)</option>
+                                    <option>10 inch (₦65,200)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦40,500</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cake 5 -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="all" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://i.pinimg.com/736x/a4/08/23/a40823f1ea7e1ad3e2fa0a139477dbcb.jpg" alt="Meat Pie" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Meat Pie</h3>
+                        <p class="text-gray-600 mb-4">Classic Meat Pie</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>Small size (₦700)</option>
+                                    <option>Normal Size (₦1,300)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦1,300</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cake 6 -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="all" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://i.pinimg.com/736x/a4/08/23/a40823f1ea7e1ad3e2fa0a139477dbcb.jpg" alt="Chicken Pie" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Chicken Pie</h3>
+                        <p class="text-gray-600 mb-4">Classic chicken pie</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>Small size (₦700)</option>
+                                    <option>Normal Size (₦1,300)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦1,300</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Birthday Cakes -->
+                <!-- Birthday Cake 1 -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="birthday" data-aos="fade-up">
+                    <img src="https://i.pinimg.com/1200x/15/55/1e/15551e91f4897b39baf3073d0d8e1b22.jpg" alt="Birthday Celebration Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold">Birthday Celebration Cake</h3>
+                            <span class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-sm">Popular</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Colorful birthday cake with additional decorations and custom message on request</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>6 inch (₦40,500)</option>
+                                    <option>8 inch (₦45,800)</option>
+                                    <option>10 inch (₦65,200)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦40,500</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Birthday Cake 2 -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="birthday" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://i.pinimg.com/736x/e0/38/ed/e038edf07f1f7afaa24934b430a5e992.jpg" alt="Kids Party Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Kids Party Cake</h3>
+                        <p class="text-gray-600 mb-4">Fun cartoon character design perfect for children's birthdays</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>6 inch (₦40,500)</option>
+                                    <option>8 inch (₦45,800)</option>
+                                    <option>10 inch (₦65,200)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦40,500</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Birthday Cake 3 -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="birthday" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://i.pinimg.com/736x/e3/5a/4c/e35a4c4030a132a31e43d42fb9cd57b3.jpg" alt="Elegant Birthday Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Elegant Birthday Cake</h3>
+                        <p class="text-gray-600 mb-4">Sophisticated design for adult birthday celebrations</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>6 inch (₦42,000)</option>
+                                    <option>8 inch (₦47,500)</option>
+                                    <option>10 inch (₦68,500)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦42,000</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Celebration Cakes -->
+                <!-- Celebration Cake 1: Wedding -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="celebration" data-aos="fade-up">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTtBKUhZKP6Bw0BOMg_3Y9sYD_ta49a1w_Jg&s" alt="Classic Wedding Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold">Classic Wedding Cake</h3>
+                            <span class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-sm">Elegant</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Traditional multi-tier wedding cake with floral decorations</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>2 layers: 10 inch base + 8 inch layer (₦120,000)</option>
+                                    <option>3 layers: 12 inch base + 10 & 8 inch layers (₦250,000)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦120,000</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Celebration Cake 2: Wedding -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="celebration" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://i.pinimg.com/736x/ee/2e/c6/ee2ec629570bfeb2715e0b3459bcbcc2.jpg" alt="Modern Wedding Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Modern Wedding Cake</h3>
+                        <p class="text-gray-600 mb-4">Contemporary design with modern and innovative designs and patterns</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>10 inch (₦71,000)</option>
+                                    <option>12 inch (₦110,600)</option>
+                                    <option>14 inch (₦150,200)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦71,000</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Celebration Cake 3: Graduation -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="celebration" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://i.pinimg.com/736x/cd/e7/ca/cde7cac69d84d518835fd8bf3bf2913e.jpg" alt="Graduation Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Graduation Cake</h3>
+                        <p class="text-gray-600 mb-4">Graduation cake with additional decorations</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>6 inch (₦42,000)</option>
+                                    <option>8 inch (₦47,500)</option>
+                                    <option>10 inch (₦68,500)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦42,000</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Anniversary Cakes -->
+                <!-- Anniversary Cake 1 -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="anniversary" data-aos="fade-up">
+                    <img src="https://i.pinimg.com/736x/2d/5f/ad/2d5fade4fca7f13c05350b5991cb57da.jpg" alt="Golden Anniversary Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold">Golden Anniversary Cake</h3>
+                            <span class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-sm">Special</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Elegant cake with gold accents for milestone celebrations</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>6 inch (₦42,000)</option>
+                                    <option>8 inch (₦47,500)</option>
+                                    <option>10 inch (₦68,500)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦42,000</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Anniversary Cake 2 -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="anniversary" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://i.pinimg.com/736x/a5/c1/e4/a5c1e4495c9597c8c5f236a35714092a.jpg" alt="Romantic Hearts Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Romantic Hearts Cake</h3>
+                        <p class="text-gray-600 mb-4">Heart-shaped cake perfect for anniversary celebrations</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>6 inch (₦42,000)</option>
+                                    <option>8 inch (₦47,500)</option>
+                                    <option>10 inch (₦68,500)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦42,000</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Anniversary Cake 3 -->
+                <div class="cake-card bg-white rounded-xl shadow-lg overflow-hidden" data-category="anniversary" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://i.pinimg.com/736x/41/49/67/414967f2cb3bd1691d3f7d005a53940b.jpg" alt="Elegant Couple Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Elegant Couple Cake</h3>
+                        <p class="text-gray-600 mb-4">Sophisticated design celebrating love and partnership</p>
+                        <div class="mb-4">
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Size:</span>
+                                <select class="border rounded px-2 py-1 text-sm">
+                                    <option>6 inch (₦44,500)</option>
+                                    <option>8 inch (₦52,500)</option>
+                                    <option>10 inch (₦72,500)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold text-lg">₦44,500</span>
+                            <button class="add-to-cart bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-amber-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Flavors Sweet Slice</h3>
+                    <p class="text-amber-200">Creating sweet memories with every bite since 2019.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="hompage.html" class="text-amber-200 hover:text-white transition">Home</a></li>
+                        <li><a href="menu.html" class="text-amber-200 hover:text-white transition">Menu</a></li>
+                        <li><a href="design.html" class="text-amber-200 hover:text-white transition">Design Your Cake</a></li>
+                        <li><a href="cart.html" class="text-amber-200 hover:text-white transition">Cart</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Contact Us</h4>
+                    <ul class="space-y-2 text-amber-200">
+                        <li class="flex items-center">
+                            <i data-feather="map-pin" class="mr-2"></i>
+                            Ajah, Lagos
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="phone" class="mr-2"></i>
+                             +234 813 954 3355
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="mail" class="mr-2"></i>
+                            flavorsweetsliceng@gmail.com
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://wa.me/+2348139543355" class="bg-amber-800 hover:bg-amber-700 w-10 h-10 rounded-full flex items-center justify-center transition">
+                            <i data-feather="message-circle"></i>
+                        </a>
+                        <a href="https://instagram.com/flavorsweetslice" class="bg-amber-800 hover:bg-amber-700 w-10 h-10 rounded-full flex items-center justify-center transition">
+                            <i data-feather="instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            
+            <div class="border-t border-amber-800 mt-8 pt-8 text-center text-amber-400">
+                <p>&copy; 2025 Flavors Sweet Slice. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out'
+        });
+
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Function to extract price from option text
+        function getPriceFromOption(optionText) {
+            const match = optionText.match(/₦([\d,]+)/);
+            if (match) {
+                return parseInt(match[1].replace(/,/g, ''), 10);
+            }
+            return 0;
+        }
+
+        // Function to update price display
+        function updatePriceDisplay(selectElement) {
+            const card = selectElement.closest('.cake-card');
+            const priceElement = card.querySelector('.text-amber-700.font-bold.text-lg');
+            const selectedOption = selectElement.options[selectElement.selectedIndex].textContent;
+            const price = getPriceFromOption(selectedOption);
+            
+            if (price > 0) {
+                priceElement.textContent = `₦${price.toLocaleString()}`;
+            }
+        }
+
+        // Filter functionality
+        function filterCakes(category) {
+            const cakeCards = document.querySelectorAll('.cake-card');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            // Update active button
+            filterButtons.forEach(btn => {
+                if (btn.dataset.category === category) {
+                    btn.classList.add('bg-amber-600', 'text-white');
+                    btn.classList.remove('bg-white', 'text-amber-800', 'border');
+                } else {
+                    btn.classList.remove('bg-amber-600', 'text-white');
+                    btn.classList.add('bg-white', 'text-amber-800', 'border', 'border-amber-300');
+                }
+            });
+            
+            // Show/hide cake cards with smooth animation
+            cakeCards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 300);
+                }
+            });
+        }
+
+        // Cart functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize price displays based on default selected options
+            document.querySelectorAll('select').forEach(select => {
+                updatePriceDisplay(select);
+                
+                // Add event listener for dropdown changes
+                select.addEventListener('change', function() {
+                    updatePriceDisplay(this);
+                });
+            });
+
+            // Filter button event listeners
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    filterCakes(category);
+                });
+            });
+
+            // Initialize with all cakes shown
+            filterCakes('all');
+
+            // Add to Cart functionality
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function() {
+                    const card = this.closest('.cake-card');
+                    const name = card.querySelector('h3').textContent;
+                    const description = card.querySelector('p.text-gray-600').textContent;
+                    const select = card.querySelector('select');
+                    const selectedOption = select.options[select.selectedIndex].textContent.trim();
+
+                    let size = 'Standard';
+                    let priceStr;
+                    const match = selectedOption.match(/^(.+?)\s*\((₦[\d,]+)\)$/);
+                    if (match) {
+                        size = match[1].trim();
+                        priceStr = match[2];
+                    } else {
+                        priceStr = selectedOption.replace(/[\(\)]/g, '').trim();
+                    }
+
+                    const price = parseInt(priceStr.replace('₦', '').replace(/,/g, ''), 10);
+
+                    const item = { 
+                        name, 
+                        description, 
+                        size, 
+                        price,
+                        quantity: 1,
+                        type: 'featured'
+                    };
+
+                    // Get existing cart or create empty array
+                    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                    
+                    // Check if item already exists in cart
+                    const existingItemIndex = cart.findIndex(cartItem => 
+                        cartItem.name === item.name && cartItem.size === item.size
+                    );
+                    
+                    if (existingItemIndex > -1) {
+                        // Update quantity if item exists
+                        cart[existingItemIndex].quantity += 1;
+                    } else {
+                        // Add new item to cart
+                        cart.push(item);
+                    }
+                    
+                    // Save to localStorage
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    
+                    // Show confirmation and redirect to cart page
+                    alert('Item added to cart!');
+                    window.location.href = 'cart.html';
+                });
+            });
+        });
+    </script>
+    <script src="auth.js" defer></script>
+</body>
+</html>

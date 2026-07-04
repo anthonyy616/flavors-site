@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Your Cake - Flavors Sweet Slice</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body class="bg-amber-50">
+    <!-- Navigation -->
+    <!-- Navigation -->
+    <nav class="bg-amber-800 text-white sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i data-feather="cake" class="text-amber-300"></i>
+                <a href="homepage.html" class="text-xl font-bold">Delicious Cakes</a>
+            </div>
+
+            <div class="hidden md:flex space-x-6">
+                <a href="homepage.html" class="hover:text-amber-300 transition">Home</a>
+                <a href="menu.html" class="hover:text-amber-300 transition">Menu</a>
+                <a href="design.html" class="hover:text-amber-300 transition">Design Your Cake</a>
+                <a href="cart.html" class="hover:text-amber-300 transition">Cart</a>
+            </div>
+
+            <!-- Dynamic Auth Section -->
+            <div id="nav-auth-section">
+                <!-- This will be populated by auth.js -->
+                <div class="flex items-center space-x-4">
+                    <a href="login.html" class="hover:text-amber-300 transition hidden md:block">Login</a>
+                    <a href="signup.html" class="bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-full transition">Sign
+                        Up</a>
+                </div>
+            </div>
+
+            <button id="menu-toggle" class="md:hidden">
+                <i data-feather="menu"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-amber-700 px-4 py-2">
+            <div class="flex flex-col space-y-3">
+                <a href="homepage.html" class="hover:text-amber-300 transition">Home</a>
+                <a href="menu.html" class="hover:text-amber-300 transition">Menu</a>
+                <a href="design.html" class="hover:text-amber-300 transition">Design Your Cake</a>
+                <a href="cart.html" class="hover:text-amber-300 transition">Cart</a>
+                <div id="mobile-auth-section">
+                    <!-- Mobile auth links will be populated by auth.js -->
+                    <a href="login.html" class="hover:text-amber-300 transition">Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Design Header -->
+    <section class="py-16 bg-amber-800 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold mb-4">Design Your Perfect Cake</h1>
+            <p class="text-xl max-w-2xl mx-auto">Create a custom cake that's uniquely yours for any special occasion</p>
+        </div>
+    </section>
+
+    <!-- Design Form -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-2xl font-bold mb-6 text-center">Customize Your Cake</h2>
+
+                <form id="cake-design-form">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Left Column - Form -->
+                        <div>
+                            <!-- Size -->
+                            <div class="mb-6" data-aos="fade-right">
+                                <label class="block text-gray-700 font-bold mb-2">Cake Size (Inches)</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="size" value="5" class="hidden">
+                                        <div class="font-bold">5"</div>
+                                        <div class="text-amber-700 font-bold">₦15,000</div>
+                                    </label>
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="size" value="6" class="hidden" checked>
+                                        <div class="font-bold">6"</div>
+                                        <div class="text-amber-700 font-bold">₦26,000</div>
+                                    </label>
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="size" value="7" class="hidden">
+                                        <div class="font-bold">7"</div>
+                                        <div class="text-amber-700 font-bold">₦34,000</div>
+                                    </label>
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="size" value="8" class="hidden">
+                                        <div class="font-bold">8"</div>
+                                        <div class="text-amber-700 font-bold">₦42,500</div>
+                                    </label>
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="size" value="9" class="hidden">
+                                        <div class="font-bold">9"</div>
+                                        <div class="text-amber-700 font-bold">₦47,500</div>
+                                    </label>
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="size" value="10" class="hidden">
+                                        <div class="font-bold">10"</div>
+                                        <div class="text-amber-700 font-bold">₦56,000</div>
+                                    </label>
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="size" value="11" class="hidden">
+                                        <div class="font-bold">11"</div>
+                                        <div class="text-amber-700 font-bold">₦68,500</div>
+                                    </label>
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="size" value="12" class="hidden">
+                                        <div class="font-bold">12"</div>
+                                        <div class="text-amber-700 font-bold">₦72,000</div>
+                                    </label>
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="size" value="13" class="hidden">
+                                        <div class="font-bold">13"</div>
+                                        <div class="text-amber-700 font-bold">₦80,500</div>
+                                    </label>
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="size" value="14" class="hidden">
+                                        <div class="font-bold">14"</div>
+                                        <div class="text-amber-700 font-bold">₦85,000</div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Color -->
+                            <div class="mb-6" data-aos="fade-right" data-aos-delay="100">
+                                <label for="color" class="block text-gray-700 font-bold mb-2">Cake Color</label>
+                                <input type="text" id="color" name="color"
+                                    placeholder="e.g. Royal blue with gold accents"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            </div>
+
+                            <!-- Flavor -->
+                            <div class="mb-6" data-aos="fade-right" data-aos-delay="200">
+                                <label class="block text-gray-700 font-bold mb-2">Cake Flavor</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="flavor" value="Red velvet" class="hidden" checked>
+                                        <div class="font-bold">Red Velvet</div>
+                                    </label>
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="flavor" value="Chocolate" class="hidden">
+                                        <div class="font-bold">Chocolate</div>
+                                    </label>
+                                    <label class="border rounded-lg p-4 text-center cursor-pointer hover:bg-amber-50">
+                                        <input type="radio" name="flavor" value="Vanilla" class="hidden">
+                                        <div class="font-bold">Vanilla</div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Icing -->
+                            <div class="mb-6" data-aos="fade-right" data-aos-delay="300">
+                                <label class="block text-gray-700 font-bold mb-2">Special Icing (+₦5,500)</label>
+                                <div class="flex items-center">
+                                    <label class="inline-flex items-center mr-6">
+                                        <input type="radio" name="icing" value="yes" class="form-radio text-amber-600">
+                                        <span class="ml-2">Yes</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="icing" value="no" class="form-radio text-amber-600"
+                                            checked>
+                                        <span class="ml-2">No</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Decorations -->
+                            <div class="mb-6" data-aos="fade-right" data-aos-delay="400">
+                                <label for="decorations" class="block text-gray-700 font-bold mb-2">Additional
+                                    Decorations</label>
+                                <textarea id="decorations" name="decorations" rows="3"
+                                    placeholder="Describe any additional decorations (e.g., flowers, messages, figurines)"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Right Column - Preview and Price -->
+                        <div>
+                            <div class="sticky top-24">
+                                <!-- Preview -->
+                                <div class="bg-amber-100 rounded-lg p-6 mb-6" data-aos="fade-left">
+                                    <h3 class="text-xl font-bold mb-4">Cake Preview</h3>
+                                    <div class="bg-white rounded-lg p-4 flex items-center justify-center h-64">
+                                        <!-- Replace the entire inner <div class="text-center"> ... </div> with this <img> tag from my code -->
+                                        <img id="cake-preview-img" src="" alt="Cake preview"
+                                            class="w-full rounded-lg shadow-lg" style="display: none;">
+                                    </div>
+                                    <div class="mt-4">
+                                        <p class="font-bold">Size: <span id="preview-size">6"</span></p>
+                                        <p class="font-bold">Color: <span id="preview-color">-</span></p>
+                                        <p class="font-bold">Flavor: <span id="preview-flavor">Red Velvet</span></p>
+                                        <p class="font-bold">Icing: <span id="preview-icing">No</span></p>
+                                        <p class="font-bold">Decorations: <span id="preview-decorations">None</span></p>
+                                    </div>
+                                    <!-- Paste this button here, right after the <div class="mt-4"> ... </div> closing tag, to trigger the image generation -->
+                                    <button type="button" id="generate-preview-btn"
+                                        class="w-full bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition mt-4">
+                                        Generate Preview Image
+                                    </button>
+                                </div>
+
+                                <!-- Paste this script link at the very end, right after the closing </div> of the preview div -->
+                                <script src="design.js"></script>
+                                <!-- Price Calculation -->
+                                <div class="bg-amber-800 text-white rounded-lg p-6" data-aos="fade-left"
+                                    data-aos-delay="100">
+                                    <h3 class="text-xl font-bold mb-4">Price Summary</h3>
+                                    <div class="space-y-2 mb-4">
+                                        <div class="flex justify-between">
+                                            <span id="base-price-label">Base Price (6"):</span>
+                                            <span id="base-price-value">₦26,000</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Special Icing:</span>
+                                            <span id="icing-price-value">₦0</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Decorations:</span>
+                                            <span id="decorations-price-value">₦0</span>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-amber-600 pt-2 flex justify-between font-bold text-lg">
+                                        <span>Total:</span>
+                                        <span id="total-price">₦26,000</span>
+                                    </div>
+                                    <button type="submit"
+                                        class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg mt-6 transition transform hover:scale-[1.02]">Add
+                                        to Cart - ₦26,000</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-amber-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Flavors Sweet Slice</h3>
+                    <p class="text-amber-200">Creating sweet memories with every bite since 2019.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="homepage.html" class="text-amber-200 hover:text-white transition">Home</a></li>
+                        <li><a href="menu.html" class="text-amber-200 hover:text-white transition">Menu</a></li>
+                        <li><a href="design.html" class="text-amber-200 hover:text-white transition">Design Your
+                                Cake</a></li>
+                        <li><a href="cart.html" class="text-amber-200 hover:text-white transition">Cart</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Contact Us</h4>
+                    <ul class="space-y-2 text-amber-200">
+                        <li class="flex items-center">
+                            <i data-feather="map-pin" class="mr-2"></i>
+                            Ajah, Lagos
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="phone" class="mr-2"></i>
+                            +234 813 954 3355
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="mail" class="mr-2"></i>
+                            flavorsweetsliceng@gmail.com
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://wa.me/+2348139543355"
+                            class="bg-amber-800 hover:bg-amber-700 w-10 h-10 rounded-full flex items-center justify-center transition">
+                            <i data-feather="message-circle"></i>
+                        </a>
+                        <a href="https://instagram.com/flavorsweetslice"
+                            class="bg-amber-800 hover:bg-amber-700 w-10 h-10 rounded-full flex items-center justify-center transition">
+                            <i data-feather="instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+
+                <div class="border-t border-amber-800 mt-8 pt-8 text-center text-amber-400">
+                    <p>&copy; 2026 Flavors Sweet Slice Cakes. All rights reserved.</p>
+                </div>
+            </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Form interaction
+        document.querySelectorAll('input[name="size"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                document.getElementById('preview-size').textContent = this.value + '"';
+                updatePrice();
+            });
+        });
+
+        document.getElementById('color').addEventListener('input', function () {
+            document.getElementById('preview-color').textContent = this.value || '-';
+            updatePrice();
+        });
+
+        document.querySelectorAll('input[name="flavor"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                document.getElementById('preview-flavor').textContent = this.value;
+                updatePrice();
+            });
+        });
+
+        document.querySelectorAll('input[name="icing"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                document.getElementById('preview-icing').textContent = this.value === 'yes' ? 'Yes' : 'No';
+                updatePrice();
+            });
+        });
+
+        document.getElementById('decorations').addEventListener('input', function () {
+            document.getElementById('preview-decorations').textContent = this.value || 'None';
+            updatePrice();
+        });
+
+        function updatePrice() {
+            // Get selected values
+            const size = document.querySelector('input[name="size"]:checked').value;
+            const icing = document.querySelector('input[name="icing"]:checked').value;
+            const decorations = document.getElementById('decorations').value;
+
+            // Calculate base price based on size
+            let basePrice = 0;
+            switch (size) {
+                case '5': basePrice = 15000; break;
+                case '6': basePrice = 26000; break;
+                case '7': basePrice = 34000; break;
+                case '8': basePrice = 42500; break;
+                case '9': basePrice = 47500; break;
+                case '10': basePrice = 56000; break;
+                case '11': basePrice = 68500; break;
+                case '12': basePrice = 72000; break;
+                case '13': basePrice = 80500; break;
+                case '14': basePrice = 85000; break;
+            }
+
+            // Calculate icing price
+            const icingPrice = icing === 'yes' ? 5500 : 0;
+
+            // Calculate decoration price (simple estimation based on text length)
+            let decorationPrice = 0;
+            if (decorations.length > 0) {
+                decorationPrice = Math.min(2000, Math.max(500, decorations.length * 20));
+            }
+
+            // Calculate total
+            const total = basePrice + icingPrice + decorationPrice;
+
+            // Update UI
+            document.getElementById('base-price-label').textContent = `Base Price (${size}"):`;
+            document.getElementById('base-price-value').textContent = '₦' + basePrice.toLocaleString();
+            document.getElementById('icing-price-value').textContent = '₦' + icingPrice.toLocaleString();
+            document.getElementById('decorations-price-value').textContent = '₦' + decorationPrice.toLocaleString();
+            document.getElementById('total-price').textContent = '₦' + total.toLocaleString();
+            document.querySelector('button[type="submit"]').textContent = 'Add to Cart - ₦' + total.toLocaleString();
+        }
+
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out'
+        });
+
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Add to Cart functionality
+        document.getElementById('cake-design-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Get current selections
+            const size = document.querySelector('input[name="size"]:checked').value;
+            const color = document.getElementById('color').value;
+            const flavor = document.querySelector('input[name="flavor"]:checked').value;
+            const icing = document.querySelector('input[name="icing"]:checked').value;
+            const decorations = document.getElementById('decorations').value;
+
+            // Calculate price (reuse existing logic)
+            let basePrice = 0;
+            switch (size) {
+                case '5': basePrice = 15000; break;
+                case '6': basePrice = 26000; break;
+                case '7': basePrice = 34000; break;
+                case '8': basePrice = 42500; break;
+                case '9': basePrice = 47500; break;
+                case '10': basePrice = 56000; break;
+                case '11': basePrice = 68500; break;
+                case '12': basePrice = 72000; break;
+                case '13': basePrice = 80500; break;
+                case '14': basePrice = 85000; break;
+            }
+            const icingPrice = icing === 'yes' ? 5500 : 0;
+            let decorationPrice = 0;
+            if (decorations.length > 0) {
+                decorationPrice = Math.min(2000, Math.max(500, decorations.length * 20));
+            }
+            const price = basePrice + icingPrice + decorationPrice;
+
+            // Create item object
+            const item = {
+                type: 'custom',
+                size,
+                color,
+                flavor,
+                icing,
+                decorations,
+                price,
+                quantity: 1
+            };
+
+            // Add to localStorage cart
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push(item);
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Redirect to cart
+            window.location.href = 'cart.html';
+        });
+    </script>
+    <script src="auth.js" defer></script>
+</body>
+
+</html>

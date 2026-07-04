@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flavors Sweet Slice - Home</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    <style>
+        .hero-bg {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1583338917451-face2751d8d5?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="bg-amber-50">
+    <!-- Navigation -->
+<nav class="bg-amber-800 text-white sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <i data-feather="cake" class="text-amber-300"></i>
+            <a href="homepage.html" class="text-xl font-bold">Flavors Sweet Slice</a>
+        </div>
+        
+        <div class="hidden md:flex space-x-6">
+            <a href="homepage.html" class="hover:text-amber-300 transition">Home</a>
+            <a href="menu.html" class="hover:text-amber-300 transition">Menu</a>
+            <a href="design.html" class="hover:text-amber-300 transition">Design Your Cake</a>
+            <a href="cart.html" class="hover:text-amber-300 transition">Cart</a>
+        </div>
+        
+        <!-- Dynamic Auth Section -->
+        <div id="nav-auth-section">
+            <!-- This will be populated by auth.js -->
+            <div class="flex items-center space-x-4">
+                <a href="login.html" class="hover:text-amber-300 transition hidden md:block">Login</a>
+                <a href="signup.html" class="bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-full transition">Sign Up</a>
+            </div>
+        </div>
+        
+        <button id="menu-toggle" class="md:hidden">
+            <i data-feather="menu"></i>
+        </button>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-amber-700 px-4 py-2">
+        <div class="flex flex-col space-y-3">
+            <a href="homepage.html" class="hover:text-amber-300 transition">Home</a>
+            <a href="menu.html" class="hover:text-amber-300 transition">Menu</a>
+            <a href="design.html" class="hover:text-amber-300 transition">Design Your Cake</a>
+            <a href="cart.html" class="hover:text-amber-300 transition">Cart</a>
+            <div id="mobile-auth-section">
+                <!-- Mobile auth links will be populated by auth.js -->
+                <a href="login.html" class="hover:text-amber-300 transition">Login</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-screen flex items-center">
+        <div class="container mx-auto px-4 text-center text-white">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4" data-aos="fade-up">Delicious Cakes For Every Occasion</h1>
+            <p class="text-xl mb-8" data-aos="fade-up" data-aos-delay="200">Custom-designed cakes made with love and the finest ingredients</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="400">
+                <a href="menu.html" class="bg-amber-600 hover:bg-amber-700 px-6 py-3 rounded-full text-lg transition transform hover:scale-105">View Menu</a>
+                <a href="design.html" class="bg-white text-amber-800 hover:bg-amber-100 px-6 py-3 rounded-full text-lg transition transform hover:scale-105">Design Your Cake</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Cakes -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Featured Cakes</h2>
+            
+            <div class="relative">
+                <!-- Scrollable Cakes -->
+                <div id="cakes-container" class="flex overflow-x-scroll space-x-6 pb-4 scroll-smooth">
+                </div>
+            </div>
+
+                <!-- Cake 1 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden flex-shrink-0 w-80" data-aos="fade-up">
+                    <img src="https://i.pinimg.com/736x/50/6f/d4/506fd4b75083b1eab6fefa707df4a9b2.jpg" alt="Chocolate Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Chocolate Fudge Cake</h3>
+                        <p class="text-gray-600 mb-4">Rich chocolate cake with fudge filling and chocolate ganache (8 inch)</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold">₦45,200</span>
+                            <button class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition" onclick="addFeaturedToCart('Chocolate Fudge Cake', 'Rich chocolate cake with fudge filling and chocolate ganache', '₦32,500', 'https://i.pinimg.com/736x/50/6f/d4/506fd4b75083b1eab6fefa707df4a9b2.jpg')">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cake 2 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://i.pinimg.com/736x/fc/e5/f0/fce5f0c8c041011750889ebb404ff8f8.jpg" alt="Red Velvet Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Red Velvet Cake</h3>
+                        <p class="text-gray-600 mb-4">Classic red velvet with cream cheese frosting and red berries (8 inch)</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold">₦40,500</span>
+                            <button class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition" onclick="addFeaturedToCart('Red Velvet Cake', 'Classic red velvet with cream cheese frosting and red berries', '₦29,200', 'https://i.pinimg.com/736x/fc/e5/f0/fce5f0c8c041011750889ebb404ff8f8.jpg')">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cake 3 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://i.pinimg.com/736x/b9/85/a8/b985a8c4ba4ffd888473442af32b4150.jpg" alt="Vanilla Cake" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Vanilla Cake</h3>
+                        <p class="text-gray-600 mb-4">Light vanilla sponge with buttercream (8 inch)</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-700 font-bold">₦38,900</span>
+                            <button class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full transition" onclick="addFeaturedToCart('Vanilla Cake', 'Light vanilla sponge with buttercream', '₦27,800', 'https://i.pinimg.com/736x/b9/85/a8/b985a8c4ba4ffd888473442af32b4150.jpg')">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                                <!-- Left Arrow: Navigation arrows --> 
+                    <button onclick="scrollCakes('left')" 
+                        class="absolute left-0 top-1/2 -translate-y-1/2 bg-amber-700 text-white p-2 rounded-full shadow-lg hidden md:flex">
+                        <i data-feather="chevron-left"></i>
+                    </button>
+
+                <!-- Right Arrow -->
+                    <button onclick="scrollCakes('right')" 
+                        class="absolute right-0 top-1/2 -translate-y-1/2 bg-amber-700 text-white p-2 rounded-full shadow-lg hidden md:flex">
+                        <i data-feather="chevron-right"></i>
+                    </button>
+            </div>
+        </div>
+    </section>
+
+                <!-- Left Arrow: Navigation arrows --> 
+                <button onclick="scrollCakes('left')" 
+                        class="absolute left-0 top-1/2 -translate-y-1/2 bg-amber-700 text-white p-2 rounded-full shadow-lg hidden md:flex">
+                    <i data-feather="chevron-left"></i>
+                </button>
+
+                <!-- Right Arrow -->
+                <button onclick="scrollCakes('right')" 
+                        class="absolute right-0 top-1/2 -translate-y-1/2 bg-amber-700 text-white p-2 rounded-full shadow-lg hidden md:flex">
+                    <i data-feather="chevron-right"></i>
+                </button>
+    
+
+                
+
+    <!-- Why Choose Us -->
+    <section class="py-16 bg-amber-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Why Choose Our Cakes?</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center" data-aos="fade-up">
+                    <div class="bg-amber-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-feather="award" class="text-amber-800 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Premium Ingredients</h3>
+                    <p class="text-gray-700">We use only the finest ingredients sourced from trusted suppliers</p>
+                </div>
+                
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="bg-amber-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-feather="heart" class="text-amber-800 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Made With Love</h3>
+                    <p class="text-gray-700">Every cake is crafted with passion and attention to detail</p>
+                </div>
+                
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bg-amber-200 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-feather="clock" class="text-amber-800 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">On-Time Delivery</h3>
+                    <p class="text-gray-700">We guarantee fresh cakes delivered on time for your special occasions</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">What Our Customers Say</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-lg" data-aos="fade-right">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-gray-300 rounded-full w-12 h-12"></div>
+                        <div class="ml-4">
+                            <h4 class="font-bold">Ade Johnson</h4>
+                            <div class="flex text-amber-500">
+                                <i data-feather="star"></i>
+                                <i data-feather="star"></i>
+                                <i data-feather="star"></i>
+                                <i data-feather="star"></i>
+                                <i data-feather="star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">"The birthday cake was absolutely stunning! My daughter couldn't stop smiling. The taste was even better than the looks. Highly recommend!"</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg" data-aos="fade-left">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-gray-300 rounded-full w-12 h-12"></div>
+                        <div class="ml-4">
+                            <h4 class="font-bold">Mary Okonkwo</h4>
+                            <div class="flex text-amber-500">
+                                <i data-feather="star"></i>
+                                <i data-feather="star"></i>
+                                <i data-feather="star"></i>
+                                <i data-feather="star"></i>
+                                <i data-feather="star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">"Ordered a custom wedding cake and it exceeded all expectations. The team was professional and the cake was a showstopper at our reception!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-amber-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Delicious Cakes</h3>
+                    <p class="text-amber-200">Creating sweet memories with every bite since 2019.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="hompage.html" class="text-amber-200 hover:text-white transition">Home</a></li>
+                        <li><a href="menu.html" class="text-amber-200 hover:text-white transition">Menu</a></li>
+                        <li><a href="design.html" class="text-amber-200 hover:text-white transition">Design Your Cake</a></li>
+                        <li><a href="cart.html" class="text-amber-200 hover:text-white transition">Cart</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Contact Us</h4>
+                    <ul class="space-y-2 text-amber-200">
+                        <li class="flex items-center">
+                            <i data-feather="map-pin" class="mr-2"></i>
+                            Ajah, Lagos
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="phone" class="mr-2"></i>
+                            +234 813 954 3355
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="mail" class="mr-2"></i>
+                            flavorsweetslice@gmail.com
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://wa.me/+2348139543355" class="bg-amber-800 hover:bg-amber-700 w-10 h-10 rounded-full flex items-center justify-center transition">
+                            <i data-feather="message-circle"></i>
+                        </a>
+                        <a href="https://instagram.com/flavorsweetslice" class="bg-amber-800 hover:bg-amber-700 w-10 h-10 rounded-full flex items-center justify-center transition">
+                            <i data-feather="instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            
+            
+            <div class="border-t border-amber-800 mt-8 pt-8 text-center text-amber-400">
+                <p>&copy; 2025 Delicious Cakes. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out'
+        });
+
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Add featured cake to cart
+        function addFeaturedToCart(name, description, priceStr, image) {
+            const price = parseInt(priceStr.replace(/₦|,/g, ''));
+            const item = {
+                type: 'featured',
+                name,
+                description,
+                image,
+                price,
+                quantity: 1
+            };
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push(item);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            window.location.href = 'cart.html';
+        }
+
+        function scrollCakes(direction) {
+            const container = document.getElementById('cakes-container');
+            const scrollAmount = 300; // pixels per click
+        if (direction === 'left') {
+            container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        } else {
+            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }  
+        
+        // STEP 4: Load profile info
+        const profile = JSON.parse(localStorage.getItem("userProfile"));
+
+        if (profile) {
+            // Option A: Show profile in console
+            console.log("Welcome back:", profile);
+
+            // Option B: Replace the "Login / Sign Up" with the user's name
+            const nav = document.querySelector("nav .flex.items-center.space-x-4");
+            if (nav) {
+                nav.innerHTML = `
+                    <span class="text-amber-200">Hi, ${profile.full_name || "User"}</span>
+                    <button id="logout-btn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full">Logout</button>
+                `;
+            }
+
+            // Add logout functionality
+            document.addEventListener("click", function(e) {
+                if (e.target && e.target.id === "logout-btn") {
+                    localStorage.removeItem("userProfile");
+                    window.location.href = "login.html";
+                }   
+            });
+
+        } else {
+            // Not logged in → redirect back to login
+            window.location.href = "login.html";
+        }
+        
+}
+
+    </script>
+    <script src="auth.js" defer></script>
+
+</body>
+</html>

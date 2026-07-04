@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Flavors Sweet Slice</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="bg-amber-50">
+    <!-- Navigation -->
+    <nav class="bg-amber-800 text-white sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i data-feather="cake" class="text-amber-300"></i>
+                <h1 class="text-xl font-bold">Flavors Sweet Slice</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="login.html" class="hover:text-amber-300 transition">Login</a>
+                <a href="signup.html" class="bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-full transition">Sign
+                    Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Signup Form -->
+    <section class="py-16 min-h-screen flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full" data-aos="fade-up">
+            <h2 class="text-3xl font-bold text-center mb-8 text-amber-800">Create Account</h2>
+
+            <form id="signup-form" class="space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                        <input type="text" id="first_name" required
+                            class="w-full px-4 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                        <input type="text" id="last_name" required
+                            class="w-full px-4 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                    <input type="email" id="email" required
+                        class="w-full px-4 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number
+                        (Optional)</label>
+                    <input type="tel" id="phone" placeholder="+2348000000000"
+                        class="w-full px-4 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="password" required minlength="6"
+                        class="w-full px-4 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg transition transform hover:scale-[1.02]">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-gray-600">Already have an account?
+                    <a href="login.html" class="text-amber-600 hover:text-amber-700 font-medium">Login here</a>
+                </p>
+            </div>
+
+            <div id="status" class="mt-4 p-3 rounded-lg text-center hidden"></div>
+        </div>
+    </section>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Initialize AOS
+        if (typeof AOS !== 'undefined') {
+            AOS.init({ duration: 800, easing: 'ease-in-out' });
+        }
+
+        // Supabase Configuration
+        const supabaseUrl = env.SUPABASE_URL;
+        const supabaseKey = env.SUPABASE_KEY;
+
+        // Initialize Supabase client correctly
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
+            }
+        });
+
+        // Signup function
+        async function signUpUser(event) {
+            event.preventDefault();
+
+            const first_name = document.getElementById('first_name').value.trim();
+            const last_name = document.getElementById('last_name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const statusDiv = document.getElementById('status');
+
+            // Show loading state
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Creating Account...';
+            submitBtn.disabled = true;
+
+            try {
+                //  1: Sign up w/ Supabase Auth
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            first_name: first_name,
+                            last_name: last_name,
+                            phone: phone
+                        }
+                    }
+                });
+
+                if (authError) {
+                    throw new Error(authError.message);
+                }
+
+                if (authData.user) {
+                    // Step 2: Create profile in profiles table
+                    const { error: profileError } = await supabase
+                        .from('profiles')
+                        .insert({
+                            id: authData.user.id,
+                            first_name: first_name,
+                            last_name: last_name,
+                            phone: phone,
+                            email: email,
+                            created_at: new Date().toISOString()
+                        });
+
+                    if (profileError) {
+                        console.warn('Profile creation warning:', profileError.message);
+                        // Continue anyway - the user is created in auth, profile can be updated later
+                    }
+
+                    // Store profile immediately in localStorage
+                    localStorage.setItem('userProfile', JSON.stringify({
+                        first_name: first_name,
+                        last_name: last_name,
+                        email: email,
+                        phone: phone
+                    }));
+
+                    // Show success message
+                    statusDiv.className = 'mt-4 p-3 rounded-lg text-center bg-green-100 text-green-700';
+                    statusDiv.innerHTML = `
+                    <strong>Success!</strong> Account created successfully. 
+                    ${authData.session ? 'You are now logged in.' : 'Please check your email for verification.'}
+                    <br>Redirecting to homepage...
+                `;
+                    statusDiv.classList.remove('hidden');
+
+                    // Redirect to homepage immediately (no delay)
+                    window.location.href = 'homepage.html';
+                }
+
+            } catch (error) {
+                statusDiv.className = 'mt-4 p-3 rounded-lg text-center bg-red-100 text-red-700';
+                statusDiv.textContent = `Error: ${error.message}`;
+                statusDiv.classList.remove('hidden');
+            } finally {
+                // Reset button state
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Event listener
+        document.getElementById('signup-form').addEventListener('submit', signUpUser);
+
+        // Check if user is already logged in
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                window.location.href = 'homepage.html';
+            }
+        });
+
+    </script>
+    <script src="auth.js" defer></script>
+</body>
+
+</html>

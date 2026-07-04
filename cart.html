@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - Flavors Sweet Slice</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body class="bg-amber-50">
+    <!-- Navigation -->
+    <!-- Navigation -->
+<nav class="bg-amber-800 text-white sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <i data-feather="cake" class="text-amber-300"></i>
+            <a href="homepage.html" class="text-xl font-bold">Delicious Cakes</a>
+        </div>
+        
+        <div class="hidden md:flex space-x-6">
+            <a href="homepage.html" class="hover:text-amber-300 transition">Home</a>
+            <a href="menu.html" class="hover:text-amber-300 transition">Menu</a>
+            <a href="design.html" class="hover:text-amber-300 transition">Design Your Cake</a>
+            <a href="cart.html" class="hover:text-amber-300 transition">Cart</a>
+        </div>
+        
+        <!-- Dynamic Auth Section -->
+        <div id="nav-auth-section">
+            <!-- This will be populated by auth.js -->
+            <div class="flex items-center space-x-4">
+                <a href="login.html" class="hover:text-amber-300 transition hidden md:block">Login</a>
+                <a href="signup.html" class="bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-full transition">Sign Up</a>
+            </div>
+        </div>
+        
+        <button id="menu-toggle" class="md:hidden">
+            <i data-feather="menu"></i>
+        </button>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-amber-700 px-4 py-2">
+        <div class="flex flex-col space-y-3">
+            <a href="homepage.html" class="hover:text-amber-300 transition">Home</a>
+            <a href="menu.html" class="hover:text-amber-300 transition">Menu</a>
+            <a href="design.html" class="hover:text-amber-300 transition">Design Your Cake</a>
+            <a href="cart.html" class="hover:text-amber-300 transition">Cart</a>
+            <div id="mobile-auth-section">
+                <!-- Mobile auth links will be populated by auth.js -->
+                <a href="login.html" class="hover:text-amber-300 transition">Login</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+    <!-- Cart Header -->
+    <section class="py-16 bg-amber-800 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold mb-4">Your Shopping Cart</h1>
+            <p class="text-xl max-w-2xl mx-auto">Review your items before checkout</p>
+        </div>
+    </section>
+
+    <!-- Cart Content -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Cart Items -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <h2 id="cart-title" class="text-2xl font-bold mb-6">Cart Items</h2>
+                        <div id="cart-items-container"></div>
+                    </div>
+    
+                    <div class="flex justify-between items-center">
+                        <a href="design.html" class="flex items-center text-amber-700 font-bold">
+                            <i data-feather="arrow-left" class="mr-2"></i> Continue Shopping
+                        </a>
+                        <button class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg transition" onclick="window.location.href = 'design.html'">Update Cart</button>
+                    </div>
+                </div>
+                    
+                
+                <!-- Order Summary -->
+                <div>
+                    <div class="bg-white rounded-xl shadow-lg p-6 sticky top-24" data-aos="fade-left">
+                    <h2 class="text-2xl font-bold mb-6">Order Summary</h2>
+        
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between">
+                            <span>Subtotal</span>
+                            <span id="subtotal">₦0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Delivery Fee</span>
+                            <span id="delivery">₦6,000</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Tax (5% of subtotal)</span>
+                            <span id="tax">₦0</span>
+                        </div>
+                        <div class="border-t pt-4 flex justify-between font-bold text-lg">
+                            <span>Total</span>
+                            <span id="total">₦0</span>
+                        </div>
+                    </div>
+        
+                    <button id="checkout-button" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg mb-4 transition transform hover:scale-[1.02]">Proceed to Checkout</button>
+        
+                    <div class="bg-amber-100 rounded-lg p-4">
+                        <h3 class="font-bold mb-2">Have a coupon?</h3>
+                        <div class="flex">
+                            <input type="text" placeholder="Enter coupon code" class="flex-grow px-4 py-2 rounded-l-lg border focus:outline-none">
+                            <button class="bg-amber-600 text-white px-4 py-2 rounded-r-lg">Apply</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-amber-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Flavors Sweet Slice</h3>
+                    <p class="text-amber-200">Creating sweet memories with every bite since 2019.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="hompage.html" class="text-amber-200 hover:text-white transition">Home</a></li>
+                        <li><a href="menu.html" class="text-amber-200 hover:text-white transition">Menu</a></li>
+                        <li><a href="design.html" class="text-amber-200 hover:text-white transition">Design Your Cake</a></li>
+                        <li><a href="cart.html" class="text-amber-200 hover:text-white transition">Cart</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Contact Us</h4>
+                    <ul class="space-y-2 text-amber-200">
+                        <li class="flex items-center">
+                            <i data-feather="map-pin" class="mr-2"></i>
+                            Ajah, Lagos
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="phone" class="mr-2"></i>
+                            +234 813 954 3355
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="mail" class="mr-2"></i>
+                             flavorsweetslice@gmail.com
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://wa.me/+2348139543355" class="bg-amber-800 hover:bg-amber-700 w-10 h-10 rounded-full flex items-center justify-center transition">
+                            <i data-feather="message-circle"></i>
+                        </a>
+                        <a href="https://instagram.com/flavorsweetslice" class="bg-amber-800 hover:bg-amber-700 w-10 h-10 rounded-full flex items-center justify-center transition">
+                            <i data-feather="instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            
+            <div class="border-t border-amber-800 mt-8 pt-8 text-center text-amber-400">
+                <p>&copy; 2025 Flavors Sweet Slice. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+        <script>
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out'
+        });
+
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Cart functionality - FIXED VERSION
+        function capitalize(str) {
+            return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
+
+        function loadCart() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const container = document.getElementById('cart-items-container');
+            const title = document.getElementById('cart-title');
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                title.textContent = 'Your cart is empty :(';
+                updateTotals(0, 0, 0, 6000);
+            } else {
+                title.textContent = `Cart Items (${cart.length})`;
+                cart.forEach((item, index) => {
+                    let itemName = item.name || `Custom ${capitalize(item.flavor)} Cake`;
+                    let desc = item.description || '';
+                    
+                    // Add size information if available
+                    if (item.size) {
+                        desc += desc ? `, Size: ${item.size}` : `Size: ${item.size}`;
+                    }
+                    
+                    // Handle custom cake details
+                    if (item.type === 'custom' || !item.type) {
+                        if (item.color) desc += desc ? `, Color: ${item.color}` : `Color: ${item.color}`;
+                        if (item.icing === 'yes') desc += desc ? ', Special Icing' : 'Special Icing';
+                        if (item.decorations) desc += desc ? `, ${item.decorations}` : item.decorations;
+                    }
+                    
+                    const itemHtml = `
+                        <div class="flex items-center ${index < cart.length - 1 ? 'border-b pb-6 mb-6' : ''}" data-aos="fade-up">
+                            <div class="w-24 h-24 bg-gray-200 rounded-lg mr-4 flex items-center justify-center">
+                                <i data-feather="cake" class="text-amber-600"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="font-bold text-lg">${itemName}</h3>
+                                <p class="text-gray-600">${desc}</p>
+                                <div class="flex items-center mt-2">
+                                    <button class="bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-300 transition" onclick="updateQuantity(${index}, -1)">-</button>
+                                    <span class="mx-3 font-medium">${item.quantity || 1}</span>
+                                    <button class="bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-300 transition" onclick="updateQuantity(${index}, 1)">+</button>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold text-lg">₦${((item.price || 0) * (item.quantity || 1)).toLocaleString()}</p>
+                                <button class="text-red-600 mt-2 flex items-center hover:text-red-700 transition" onclick="removeItem(${index})">
+                                    <i data-feather="trash-2" class="mr-1"></i> Remove
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += itemHtml;
+                });
+                feather.replace(); // Re-initialize icons
+                updateTotals();
+            }
+        }
+
+        function updateQuantity(index, change) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart[index]) {
+                cart[index].quantity = Math.max(1, (cart[index].quantity || 1) + change);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                loadCart();
+            }
+        }
+
+        function removeItem(index) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+        }
+
+        function updateTotals() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const subtotal = cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
+            const tax = Math.round(subtotal * 0.05);
+            const delivery = 6000; // Fixed delivery fee
+            const total = subtotal + tax + delivery;
+
+            document.getElementById('subtotal').textContent = '₦' + subtotal.toLocaleString();
+            document.getElementById('delivery').textContent = '₦' + delivery.toLocaleString();
+            document.getElementById('tax').textContent = '₦' + tax.toLocaleString();
+            document.getElementById('total').textContent = '₦' + total.toLocaleString();
+        }
+
+        // Proceed to Checkout with WhatsApp - FIXED VERSION
+        document.getElementById('checkout-button').addEventListener('click', function() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            
+            // Calculate totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
+            const tax = Math.round(subtotal * 0.05);
+            const delivery = 6000;
+            const total = subtotal + tax + delivery;
+            
+            // Build message
+            let message = 'Hello! I would like to order the following items from Flavors Sweet Slice:\n\n';
+            
+            cart.forEach((item, index) => {
+                let itemName = item.name || `Custom ${capitalize(item.flavor)} Cake`;
+                let desc = '';
+                
+                if (item.description) desc += item.description;
+                if (item.size) desc += desc ? `, Size: ${item.size}` : `Size: ${item.size}`;
+                if (item.type === 'custom' || !item.type) {
+                    if (item.color) desc += desc ? `, Color: ${item.color}` : `Color: ${item.color}`;
+                    if (item.icing === 'yes') desc += desc ? ', Special Icing' : 'Special Icing';
+                    if (item.decorations) desc += desc ? `, Decorations: ${item.decorations}` : `Decorations: ${item.decorations}`;
+                }
+                
+                message += `${index + 1}. ${itemName} - ${desc}\n`;
+                message += `   Quantity: ${item.quantity || 1}, Price: ₦${((item.price || 0) * (item.quantity || 1)).toLocaleString()}\n\n`;
+            });
+            
+            message += `ORDER SUMMARY:\n`;
+            message += `Subtotal: ₦${subtotal.toLocaleString()}\n`;
+            message += `Delivery Fee: ₦${delivery.toLocaleString()}\n`;
+            message += `Tax (5%): ₦${tax.toLocaleString()}\n`;
+            message += `TOTAL: ₦${total.toLocaleString()}\n\n`;
+            message += 'Please confirm my order. Thank you!';
+            
+            // WhatsApp business number
+            const whatsappNumber = '2348139543355';
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+            
+            // Open WhatsApp in new tab
+            window.open(whatsappUrl, '_blank');
+        });
+
+        // Load cart on page load
+        window.addEventListener('load', loadCart);
+    </script>
+    <script src="auth.js" defer></script>
+</body>
+</html>
+
+
+
