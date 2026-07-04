@@ -1,13 +1,7 @@
 // auth.js - GUARANTEED WORKING VERSION
 console.log(' auth.js loaded - Starting authentication');
 
-// Supabase Configuration
-const supabaseUrl = env.SUPABASE_URL;
-const supabaseKey = env.SUPABASE_KEY;
-
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
-    auth: { persistSession: true, autoRefreshToken: true }
-});
+const supabase = window.supabaseClient;
 
 // GUARANTEED navigation update
 async function updateNavigation() {
@@ -84,7 +78,7 @@ async function updateNavigation() {
 // Logout function
 async function logout() {
     await supabase.auth.signOut();
-    window.location.href = 'homepage.html';
+    window.location.href = 'index.html';
 }
 
 // Initialize auth on page load and listen for changes

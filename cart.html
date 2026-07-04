@@ -1,17 +1,29 @@
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
+
 <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Your Cart - Flavors Sweet Slice</title>
-  <meta name="description" content="Review your artisanal cake order before checkout."/>
+  <meta name="description" content="Review your artisanal cake order before checkout." />
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+    rel="stylesheet" />
+  <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Manrope', sans-serif;
       background-color: #FDF9F3;
@@ -30,273 +42,384 @@
 
     /* Card ambient shadow */
     .card-shadow {
-      box-shadow: 0 4px 24px rgba(61,29,22,0.06), 0 1px 3px rgba(61,29,22,0.04);
+      box-shadow: 0 4px 24px rgba(61, 29, 22, 0.06), 0 1px 3px rgba(61, 29, 22, 0.04);
     }
 
-    .sym { font-family: 'Material Symbols Outlined'; user-select: none; }
-    .sym-fill { font-variation-settings: 'FILL' 1; }
+    .sym {
+      font-family: 'Material Symbols Outlined';
+      user-select: none;
+    }
+
+    .sym-fill {
+      font-variation-settings: 'FILL' 1;
+    }
 
     .btn-primary {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 13px 28px; border-radius: 9999px;
-      background: #3D1D16; color: #fff;
-      font-family: 'Inter',sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 0.02em;
-      border: none; cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: 9999px;
+      background: #3D1D16;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border: none;
+      cursor: pointer;
       transition: background 0.2s, transform 0.15s;
-      box-shadow: 0 4px 16px rgba(61,29,22,0.25);
+      box-shadow: 0 4px 16px rgba(61, 29, 22, 0.25);
     }
-    .btn-primary:hover { background: #230904; }
-    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-primary:hover {
+      background: #230904;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
 
     .btn-ghost {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 10px 20px; border-radius: 9999px;
-      background: rgba(61,29,22,0.05); color: #3D1D16;
-      font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 600;
-      border: 1px solid rgba(61,29,22,0.1); cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 9999px;
+      background: rgba(61, 29, 22, 0.05);
+      color: #3D1D16;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid rgba(61, 29, 22, 0.1);
+      cursor: pointer;
       transition: background 0.2s, transform 0.15s;
     }
-    .btn-ghost:hover { background: rgba(61,29,22,0.1); }
-    .btn-ghost:active { transform: scale(0.97); }
+
+    .btn-ghost:hover {
+      background: rgba(61, 29, 22, 0.1);
+    }
+
+    .btn-ghost:active {
+      transform: scale(0.97);
+    }
 
     .qty-btn {
-      width: 32px; height: 32px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      background: #F0EDED; color: #3D1D16; transition: background 0.2s;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #F0EDED;
+      color: #3D1D16;
+      transition: background 0.2s;
     }
-    .qty-btn:hover { background: #e5e0e0; }
+
+    .qty-btn:hover {
+      background: #e5e0e0;
+    }
 
     .nav-link {
-      font-family: 'Inter',sans-serif; font-size: 14px; font-weight: 600;
-      color: #3D1D16; text-decoration: none; position: relative; transition: opacity 0.2s;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #3D1D16;
+      text-decoration: none;
+      position: relative;
+      transition: opacity 0.2s;
     }
-    .nav-link.muted { color: #605e5a; }
-    .nav-link::after {
-      content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px;
-      background:#C8102E; border-radius:2px; transition: width 0.25s;
-    }
-    .nav-link:hover::after, .nav-link.active::after { width:100%; }
 
-    .bottom-nav-item { transition: color 0.2s, transform 0.15s; }
-    .bottom-nav-item:active { transform: scale(0.88); }
+    .nav-link.muted {
+      color: #605e5a;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #C8102E;
+      border-radius: 2px;
+      transition: width 0.25s;
+    }
+
+    .nav-link:hover::after,
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    .bottom-nav-item {
+      transition: color 0.2s, transform 0.15s;
+    }
+
+    .bottom-nav-item:active {
+      transform: scale(0.88);
+    }
   </style>
 </head>
 
 <body>
 
-<!-- TOP APP BAR -->
-<header id="top-bar" class="glass-header fixed top-0 w-full z-50 h-16 flex items-center justify-between px-5 md:px-8 transition-shadow duration-300">
-  <div class="flex items-center gap-4">
-    <button id="menu-btn" aria-label="Open menu" class="sym text-[#3D1D16] hover:opacity-70 active:scale-90 transition-all cursor-pointer">menu</button>
-    <a href="homepage.html" class="font-bold text-[18px] tracking-tight text-[#3D1D16] leading-none" style="font-family:'Manrope',sans-serif;">Flavors Sweet Slice</a>
-  </div>
-  <nav class="hidden md:flex gap-8 items-center">
-    <a href="homepage.html" class="nav-link muted">Home</a>
-    <a href="menu.html" class="nav-link muted">Menu</a>
-    <a href="design.html" class="nav-link muted">Custom</a>
-    <a href="cart.html" class="nav-link active">Cart</a>
-  </nav>
-  <!-- Auth section populated by auth.js -->
-  <div id="nav-auth-section" class="flex items-center gap-3">
-    <a href="login.html" class="font-medium text-[13px] text-[#605e5a] hover:text-[#3D1D16] transition-colors hidden md:block" style="font-family:'Inter',sans-serif;">Login</a>
-    <a href="signup.html" class="btn-primary" style="padding:10px 20px;font-size:13px;">Sign Up</a>
-  </div>
-</header>
-
-<!-- Mobile Drawer -->
-<div id="mobile-drawer" class="fixed inset-0 z-[60] pointer-events-none">
-  <div id="drawer-backdrop" class="absolute inset-0 backdrop-blur-sm opacity-0 transition-opacity duration-300" style="background:rgba(61,29,22,0.3);"></div>
-  <aside id="drawer-panel" class="absolute top-0 left-0 h-full w-72 bg-[#FDF9F3] shadow-2xl flex flex-col -translate-x-full" style="transition: transform 0.35s cubic-bezier(0.32,0.72,0,1);">
-    <div class="flex items-center justify-between px-6 h-16 border-b" style="border-color:rgba(213,194,191,0.3);">
-      <span class="font-bold text-[17px] text-[#3D1D16]" style="font-family:'Manrope',sans-serif;">Flavors Sweet Slice</span>
-      <button id="close-drawer" class="sym text-[#605e5a] hover:text-[#3D1D16] transition-colors">close</button>
+  <!-- TOP APP BAR -->
+  <header id="top-bar"
+    class="glass-header fixed top-0 w-full z-50 h-16 flex items-center justify-between px-5 md:px-8 transition-shadow duration-300">
+    <div class="flex items-center gap-4">
+      <button id="menu-btn" aria-label="Open menu"
+        class="sym text-[#3D1D16] hover:opacity-70 active:scale-90 transition-all cursor-pointer">menu</button>
+      <a href="index.html" class="font-bold text-[18px] tracking-tight text-[#3D1D16] leading-none"
+        style="font-family:'Manrope',sans-serif;">Flavors Sweet Slice</a>
     </div>
-    <nav class="flex flex-col gap-1 p-4 mt-2">
-      <a href="homepage.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#605e5a] font-semibold text-sm hover:bg-[#e6e2dc]/40 transition-colors" style="font-family:'Inter',sans-serif;">
-        <span class="sym">home</span> Home
-      </a>
-      <a href="menu.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#605e5a] font-semibold text-sm hover:bg-[#e6e2dc]/40 transition-colors" style="font-family:'Inter',sans-serif;">
-        <span class="sym">menu_book</span> Menu
-      </a>
-      <a href="design.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#605e5a] font-semibold text-sm hover:bg-[#e6e2dc]/40 transition-colors" style="font-family:'Inter',sans-serif;">
-        <span class="sym">auto_fix_high</span> Custom Order
-      </a>
-      <a href="cart.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#3D1D16] font-semibold text-sm" style="font-family:'Inter',sans-serif; background:rgba(230,226,220,0.6);">
-        <span class="sym sym-fill" style="color:#C8102E;">shopping_bag</span> Cart
-      </a>
+    <nav class="hidden md:flex gap-8 items-center">
+      <a href="index.html" class="nav-link muted">Home</a>
+      <a href="menu.html" class="nav-link muted">Menu</a>
+      <a href="design.html" class="nav-link muted">Custom</a>
+      <a href="cart.html" class="nav-link active">Cart</a>
     </nav>
-    <div id="mobile-auth-section" class="px-4 mt-2 flex flex-col gap-2">
-      <a href="login.html" class="w-full text-center py-3 rounded-xl border text-[#3D1D16] font-semibold text-sm transition-colors hover:bg-[#e6e2dc]/40" style="font-family:'Inter',sans-serif; border-color:#d5c2bf;">Login</a>
+    <!-- Auth section populated by auth.js -->
+    <div id="nav-auth-section" class="flex items-center gap-3">
+      <a href="login.html"
+        class="font-medium text-[13px] text-[#605e5a] hover:text-[#3D1D16] transition-colors hidden md:block"
+        style="font-family:'Inter',sans-serif;">Login</a>
+      <a href="signup.html" class="btn-primary" style="padding:10px 20px;font-size:13px;">Sign Up</a>
     </div>
-    <div class="mt-auto p-6 border-t" style="border-color:rgba(213,194,191,0.3);">
-      <p class="text-xs text-[#605e5a]" style="font-family:'Inter',sans-serif;">© 2026 Flavors Sweet Slice</p>
-    </div>
-  </aside>
-</div>
+  </header>
 
-<!-- MAIN -->
-<main class="pt-24 pb-32 max-w-[1200px] mx-auto px-5 md:px-8">
-  <div class="mb-10 text-center">
-    <h1 class="text-[32px] md:text-[40px] font-bold text-[#3D1D16] tracking-tight mb-2" style="font-family:'Manrope',sans-serif;">Your Shopping Cart</h1>
-    <p class="text-[#605e5a]" style="font-family:'Manrope',sans-serif;">Review your artisanal selections before checkout</p>
+  <!-- Mobile Drawer -->
+  <div id="mobile-drawer" class="fixed inset-0 z-[60] pointer-events-none">
+    <div id="drawer-backdrop" class="absolute inset-0 backdrop-blur-sm opacity-0 transition-opacity duration-300"
+      style="background:rgba(61,29,22,0.3);"></div>
+    <aside id="drawer-panel"
+      class="absolute top-0 left-0 h-full w-72 bg-[#FDF9F3] shadow-2xl flex flex-col -translate-x-full"
+      style="transition: transform 0.35s cubic-bezier(0.32,0.72,0,1);">
+      <div class="flex items-center justify-between px-6 h-16 border-b" style="border-color:rgba(213,194,191,0.3);">
+        <span class="font-bold text-[17px] text-[#3D1D16]" style="font-family:'Manrope',sans-serif;">Flavors Sweet
+          Slice</span>
+        <button id="close-drawer" class="sym text-[#605e5a] hover:text-[#3D1D16] transition-colors">close</button>
+      </div>
+      <nav class="flex flex-col gap-1 p-4 mt-2">
+        <a href="index.html"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#605e5a] font-semibold text-sm hover:bg-[#e6e2dc]/40 transition-colors"
+          style="font-family:'Inter',sans-serif;">
+          <span class="sym">home</span> Home
+        </a>
+        <a href="menu.html"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#605e5a] font-semibold text-sm hover:bg-[#e6e2dc]/40 transition-colors"
+          style="font-family:'Inter',sans-serif;">
+          <span class="sym">menu_book</span> Menu
+        </a>
+        <a href="design.html"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#605e5a] font-semibold text-sm hover:bg-[#e6e2dc]/40 transition-colors"
+          style="font-family:'Inter',sans-serif;">
+          <span class="sym">auto_fix_high</span> Custom Order
+        </a>
+        <a href="cart.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#3D1D16] font-semibold text-sm"
+          style="font-family:'Inter',sans-serif; background:rgba(230,226,220,0.6);">
+          <span class="sym sym-fill" style="color:#C8102E;">shopping_bag</span> Cart
+        </a>
+      </nav>
+      <div id="mobile-auth-section" class="px-4 mt-2 flex flex-col gap-2">
+        <a href="login.html"
+          class="w-full text-center py-3 rounded-xl border text-[#3D1D16] font-semibold text-sm transition-colors hover:bg-[#e6e2dc]/40"
+          style="font-family:'Inter',sans-serif; border-color:#d5c2bf;">Login</a>
+      </div>
+      <div class="mt-auto p-6 border-t" style="border-color:rgba(213,194,191,0.3);">
+        <p class="text-xs text-[#605e5a]" style="font-family:'Inter',sans-serif;">© 2026 Flavors Sweet Slice</p>
+      </div>
+    </aside>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-    
-    <!-- Cart Items Area -->
-    <div class="lg:col-span-2">
-      <div class="bg-white rounded-2xl card-shadow p-6 mb-6">
-        <div class="flex items-center justify-between mb-6 pb-4 border-b border-[#F0EDED]">
-          <h2 id="cart-title" class="text-[20px] font-bold text-[#3D1D16]" style="font-family:'Manrope',sans-serif;">Cart Items</h2>
+  <!-- MAIN -->
+  <main class="pt-24 pb-32 max-w-[1200px] mx-auto px-5 md:px-8">
+    <div class="mb-10 text-center">
+      <h1 class="text-[32px] md:text-[40px] font-bold text-[#3D1D16] tracking-tight mb-2"
+        style="font-family:'Manrope',sans-serif;">Your Shopping Cart</h1>
+      <p class="text-[#605e5a]" style="font-family:'Manrope',sans-serif;">Review your artisanal selections before
+        checkout</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+      <!-- Cart Items Area -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl card-shadow p-6 mb-6">
+          <div class="flex items-center justify-between mb-6 pb-4 border-b border-[#F0EDED]">
+            <h2 id="cart-title" class="text-[20px] font-bold text-[#3D1D16]" style="font-family:'Manrope',sans-serif;">
+              Cart Items</h2>
+          </div>
+
+          <div id="cart-items-container" class="flex flex-col gap-6">
+            <!-- Items injected via JS -->
+          </div>
         </div>
-        
-        <div id="cart-items-container" class="flex flex-col gap-6">
-          <!-- Items injected via JS -->
+
+        <div class="flex justify-between items-center px-2">
+          <a href="menu.html"
+            class="flex items-center gap-2 text-[#C8102E] font-semibold text-[14px] hover:opacity-80 transition-opacity"
+            style="font-family:'Inter',sans-serif;">
+            <span class="sym" style="font-size:18px;">arrow_back</span> Continue Shopping
+          </a>
         </div>
       </div>
 
-      <div class="flex justify-between items-center px-2">
-        <a href="menu.html" class="flex items-center gap-2 text-[#C8102E] font-semibold text-[14px] hover:opacity-80 transition-opacity" style="font-family:'Inter',sans-serif;">
-          <span class="sym" style="font-size:18px;">arrow_back</span> Continue Shopping
+      <!-- Order Summary -->
+      <div class="bg-white rounded-2xl card-shadow p-6 lg:sticky lg:top-24">
+        <h2 class="text-[20px] font-bold text-[#3D1D16] mb-6" style="font-family:'Manrope',sans-serif;">Order Summary
+        </h2>
+
+        <div class="flex flex-col gap-4 mb-6 pb-6 border-b border-[#F0EDED]"
+          style="font-family:'Inter',sans-serif; font-size:14px; color:#605e5a;">
+          <div class="flex justify-between">
+            <span>Subtotal</span>
+            <span id="subtotal" class="font-semibold text-[#3D1D16]">₦0</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Delivery Fee</span>
+            <span id="delivery" class="font-semibold text-[#3D1D16]">₦6,000</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Tax (5%)</span>
+            <span id="tax" class="font-semibold text-[#3D1D16]">₦0</span>
+          </div>
+        </div>
+
+        <div class="flex justify-between font-bold text-[20px] text-[#3D1D16] mb-8"
+          style="font-family:'Manrope',sans-serif;">
+          <span>Total</span>
+          <span id="total">₦0</span>
+        </div>
+
+        <button id="checkout-button" class="btn-primary w-full mb-6 py-4 text-[15px]">
+          <span class="sym">lock</span> Proceed to Checkout
+        </button>
+
+        <div class="bg-[#FDF9F3] rounded-xl p-4 border border-[#e6e2dc]">
+          <h3 class="font-semibold text-[13px] text-[#3D1D16] mb-3" style="font-family:'Inter',sans-serif;">Have a
+            coupon?</h3>
+          <div class="flex gap-2">
+            <input type="text" placeholder="Promo code"
+              class="flex-grow px-3 py-2 bg-white border border-[#d5c2bf] rounded-lg text-[13px] font-medium text-[#3D1D16] outline-none focus:border-[#3D1D16] transition-colors"
+              style="font-family:'Inter',sans-serif;">
+            <button
+              class="bg-[#3D1D16] text-white px-4 py-2 rounded-lg text-[13px] font-semibold hover:bg-[#230904] transition-colors"
+              style="font-family:'Inter',sans-serif;">Apply</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+
+  <!-- FOOTER -->
+  <footer class="border-t py-12 px-5 md:px-8 mb-20 md:mb-0"
+    style="border-color:rgba(213,194,191,0.25); background:#FDF9F3;">
+    <div class="max-w-[1200px] mx-auto flex flex-col items-center text-center gap-5">
+      <h3 class="font-bold text-[20px] text-[#3D1D16]" style="font-family:'Manrope',sans-serif;">Flavors Sweet Slice
+      </h3>
+      <p class="text-[15px] text-[#605e5a] max-w-xs leading-relaxed" style="font-family:'Manrope',sans-serif;">Creating
+        sweet memories with every bite since 2019.</p>
+      <div class="flex gap-3">
+        <a href="https://wa.me/+2348139543355" aria-label="WhatsApp"
+          class="w-10 h-10 rounded-full flex items-center justify-center text-[#3D1D16] transition-all"
+          style="background:#e6e2dc;" onmouseover="this.style.background='#C8102E';this.style.color='#fff'"
+          onmouseout="this.style.background='#e6e2dc';this.style.color='#3D1D16'">
+          <span class="sym" style="font-size:20px;">chat</span>
+        </a>
+        <a href="https://instagram.com/flavorsweetslice" aria-label="Instagram"
+          class="w-10 h-10 rounded-full flex items-center justify-center text-[#3D1D16] transition-all"
+          style="background:#e6e2dc;" onmouseover="this.style.background='#C8102E';this.style.color='#fff'"
+          onmouseout="this.style.background='#e6e2dc';this.style.color='#3D1D16'">
+          <span class="sym" style="font-size:20px;">camera</span>
         </a>
       </div>
+      <p class="text-[13px]" style="font-family:'Manrope',sans-serif; color:rgba(96,94,90,0.5);">© 2026 Flavors Sweet
+        Slice. Artisanal Excellence.</p>
     </div>
+  </footer>
 
-    <!-- Order Summary -->
-    <div class="bg-white rounded-2xl card-shadow p-6 lg:sticky lg:top-24">
-      <h2 class="text-[20px] font-bold text-[#3D1D16] mb-6" style="font-family:'Manrope',sans-serif;">Order Summary</h2>
-      
-      <div class="flex flex-col gap-4 mb-6 pb-6 border-b border-[#F0EDED]" style="font-family:'Inter',sans-serif; font-size:14px; color:#605e5a;">
-        <div class="flex justify-between">
-          <span>Subtotal</span>
-          <span id="subtotal" class="font-semibold text-[#3D1D16]">₦0</span>
-        </div>
-        <div class="flex justify-between">
-          <span>Delivery Fee</span>
-          <span id="delivery" class="font-semibold text-[#3D1D16]">₦6,000</span>
-        </div>
-        <div class="flex justify-between">
-          <span>Tax (5%)</span>
-          <span id="tax" class="font-semibold text-[#3D1D16]">₦0</span>
-        </div>
-      </div>
-      
-      <div class="flex justify-between font-bold text-[20px] text-[#3D1D16] mb-8" style="font-family:'Manrope',sans-serif;">
-        <span>Total</span>
-        <span id="total">₦0</span>
-      </div>
+  <!-- BOTTOM NAV (mobile + tablet) -->
+  <nav class="fixed bottom-0 w-full z-50 flex justify-around items-center h-[68px] px-4 border-t md:hidden"
+    style="background:rgba(253,249,243,0.92); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-color:rgba(213,194,191,0.2);">
+    <a href="index.html" class="bottom-nav-item flex flex-col items-center gap-0.5 text-[#605e5a] hover:text-[#3D1D16]">
+      <span class="sym" style="font-size:22px;">home</span>
+      <span class="font-semibold text-[10px] tracking-wide" style="font-family:'Inter',sans-serif;">Home</span>
+    </a>
+    <a href="menu.html" class="bottom-nav-item flex flex-col items-center gap-0.5 text-[#605e5a] hover:text-[#3D1D16]">
+      <span class="sym" style="font-size:22px;">cake</span>
+      <span class="font-semibold text-[10px] tracking-wide" style="font-family:'Inter',sans-serif;">Shop</span>
+    </a>
+    <a href="design.html"
+      class="bottom-nav-item flex flex-col items-center gap-0.5 text-[#605e5a] hover:text-[#3D1D16]">
+      <span class="sym" style="font-size:22px;">auto_fix_high</span>
+      <span class="font-semibold text-[10px] tracking-wide" style="font-family:'Inter',sans-serif;">Custom</span>
+    </a>
+    <a href="cart.html" class="bottom-nav-item flex flex-col items-center gap-0.5" style="color:#C8102E;">
+      <span class="sym sym-fill" style="font-size:22px;">shopping_bag</span>
+      <span class="font-semibold text-[10px] tracking-wide" style="font-family:'Inter',sans-serif;">Cart</span>
+    </a>
+  </nav>
 
-      <button id="checkout-button" class="btn-primary w-full mb-6 py-4 text-[15px]">
-        <span class="sym">lock</span> Proceed to Checkout
-      </button>
+  <script>
+    /* Nav shadow */
+    window.addEventListener('scroll', () => {
+      document.getElementById('top-bar').style.boxShadow = window.scrollY > 12 ? '0 4px 24px rgba(61,29,22,0.1)' : 'none';
+    }, { passive: true });
 
-      <div class="bg-[#FDF9F3] rounded-xl p-4 border border-[#e6e2dc]">
-        <h3 class="font-semibold text-[13px] text-[#3D1D16] mb-3" style="font-family:'Inter',sans-serif;">Have a coupon?</h3>
-        <div class="flex gap-2">
-          <input type="text" placeholder="Promo code" class="flex-grow px-3 py-2 bg-white border border-[#d5c2bf] rounded-lg text-[13px] font-medium text-[#3D1D16] outline-none focus:border-[#3D1D16] transition-colors" style="font-family:'Inter',sans-serif;">
-          <button class="bg-[#3D1D16] text-white px-4 py-2 rounded-lg text-[13px] font-semibold hover:bg-[#230904] transition-colors" style="font-family:'Inter',sans-serif;">Apply</button>
-        </div>
-      </div>
-    </div>
+    /* Mobile drawer */
+    const menuBtn = document.getElementById('menu-btn');
+    const closeBtn = document.getElementById('close-drawer');
+    const drawer = document.getElementById('mobile-drawer');
+    const panel = document.getElementById('drawer-panel');
+    const backdrop = document.getElementById('drawer-backdrop');
+    function openDrawer() { drawer.style.pointerEvents = 'auto'; panel.style.transform = 'translateX(0)'; backdrop.style.opacity = '1'; }
+    function closeDrawerFn() { panel.style.transform = 'translateX(-100%)'; backdrop.style.opacity = '0'; setTimeout(() => { drawer.style.pointerEvents = 'none'; }, 350); }
+    menuBtn.addEventListener('click', openDrawer);
+    closeBtn.addEventListener('click', closeDrawerFn);
+    backdrop.addEventListener('click', closeDrawerFn);
 
-  </div>
-</main>
-
-
-<!-- FOOTER -->
-<footer class="border-t py-12 px-5 md:px-8 mb-20 md:mb-0" style="border-color:rgba(213,194,191,0.25); background:#FDF9F3;">
-  <div class="max-w-[1200px] mx-auto flex flex-col items-center text-center gap-5">
-    <h3 class="font-bold text-[20px] text-[#3D1D16]" style="font-family:'Manrope',sans-serif;">Flavors Sweet Slice</h3>
-    <p class="text-[15px] text-[#605e5a] max-w-xs leading-relaxed" style="font-family:'Manrope',sans-serif;">Creating sweet memories with every bite since 2019.</p>
-    <div class="flex gap-3">
-      <a href="https://wa.me/+2348139543355" aria-label="WhatsApp" class="w-10 h-10 rounded-full flex items-center justify-center text-[#3D1D16] transition-all" style="background:#e6e2dc;" onmouseover="this.style.background='#C8102E';this.style.color='#fff'" onmouseout="this.style.background='#e6e2dc';this.style.color='#3D1D16'">
-        <span class="sym" style="font-size:20px;">chat</span>
-      </a>
-      <a href="https://instagram.com/flavorsweetslice" aria-label="Instagram" class="w-10 h-10 rounded-full flex items-center justify-center text-[#3D1D16] transition-all" style="background:#e6e2dc;" onmouseover="this.style.background='#C8102E';this.style.color='#fff'" onmouseout="this.style.background='#e6e2dc';this.style.color='#3D1D16'">
-        <span class="sym" style="font-size:20px;">camera</span>
-      </a>
-    </div>
-    <p class="text-[13px]" style="font-family:'Manrope',sans-serif; color:rgba(96,94,90,0.5);">© 2026 Flavors Sweet Slice. Artisanal Excellence.</p>
-  </div>
-</footer>
-
-<!-- BOTTOM NAV (mobile + tablet) -->
-<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center h-[68px] px-4 border-t md:hidden"
-     style="background:rgba(253,249,243,0.92); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-color:rgba(213,194,191,0.2);">
-  <a href="homepage.html" class="bottom-nav-item flex flex-col items-center gap-0.5 text-[#605e5a] hover:text-[#3D1D16]">
-    <span class="sym" style="font-size:22px;">home</span>
-    <span class="font-semibold text-[10px] tracking-wide" style="font-family:'Inter',sans-serif;">Home</span>
-  </a>
-  <a href="menu.html" class="bottom-nav-item flex flex-col items-center gap-0.5 text-[#605e5a] hover:text-[#3D1D16]">
-    <span class="sym" style="font-size:22px;">cake</span>
-    <span class="font-semibold text-[10px] tracking-wide" style="font-family:'Inter',sans-serif;">Shop</span>
-  </a>
-  <a href="design.html" class="bottom-nav-item flex flex-col items-center gap-0.5 text-[#605e5a] hover:text-[#3D1D16]">
-    <span class="sym" style="font-size:22px;">auto_fix_high</span>
-    <span class="font-semibold text-[10px] tracking-wide" style="font-family:'Inter',sans-serif;">Custom</span>
-  </a>
-  <a href="cart.html" class="bottom-nav-item flex flex-col items-center gap-0.5" style="color:#C8102E;">
-    <span class="sym sym-fill" style="font-size:22px;">shopping_bag</span>
-    <span class="font-semibold text-[10px] tracking-wide" style="font-family:'Inter',sans-serif;">Cart</span>
-  </a>
-</nav>
-
-<script>
-  /* Nav shadow */
-  window.addEventListener('scroll', () => {
-    document.getElementById('top-bar').style.boxShadow = window.scrollY > 12 ? '0 4px 24px rgba(61,29,22,0.1)' : 'none';
-  }, { passive: true });
-
-  /* Mobile drawer */
-  const menuBtn  = document.getElementById('menu-btn');
-  const closeBtn = document.getElementById('close-drawer');
-  const drawer   = document.getElementById('mobile-drawer');
-  const panel    = document.getElementById('drawer-panel');
-  const backdrop = document.getElementById('drawer-backdrop');
-  function openDrawer() { drawer.style.pointerEvents='auto'; panel.style.transform='translateX(0)'; backdrop.style.opacity='1'; }
-  function closeDrawerFn() { panel.style.transform='translateX(-100%)'; backdrop.style.opacity='0'; setTimeout(()=>{ drawer.style.pointerEvents='none'; },350); }
-  menuBtn.addEventListener('click', openDrawer);
-  closeBtn.addEventListener('click', closeDrawerFn);
-  backdrop.addEventListener('click', closeDrawerFn);
-
-  /* Cart logic */
-  function capitalize(str) {
+    /* Cart logic */
+    function capitalize(str) {
       return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  }
+    }
 
-  function loadCart() {
+    function loadCart() {
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       const container = document.getElementById('cart-items-container');
       const title = document.getElementById('cart-title');
       container.innerHTML = '';
 
       if (cart.length === 0) {
-          title.textContent = 'Your cart is empty';
-          container.innerHTML = `
+        title.textContent = 'Your cart is empty';
+        container.innerHTML = `
             <div class="text-center py-10">
               <span class="sym text-[#d5c2bf]" style="font-size:48px;">shopping_cart</span>
               <p class="mt-4 text-[#605e5a] font-medium" style="font-family:'Inter',sans-serif;">Looks like you haven't added anything yet.</p>
             </div>
           `;
-          updateTotals(0, 0, 0, 6000);
+        updateTotals(0, 0, 0, 6000);
       } else {
-          title.textContent = `Cart Items (${cart.length})`;
-          cart.forEach((item, index) => {
-              let itemName = item.name || `Custom ${capitalize(item.flavor)} Cake`;
-              let desc = item.description || '';
-              
-              if (item.size) desc += desc ? `, Size: ${item.size}` : `Size: ${item.size}`;
-              
-              if (item.type === 'custom' || !item.type) {
-                  if (item.color) desc += desc ? `, Color: ${item.color}` : `Color: ${item.color}`;
-                  if (item.icing === 'yes') desc += desc ? ', Special Icing' : 'Special Icing';
-                  if (item.decorations) desc += desc ? `, ${item.decorations}` : item.decorations;
-              }
-              
-              // Fallback image if not present
-              const imgSrc = item.image || "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=200";
+        title.textContent = `Cart Items (${cart.length})`;
+        cart.forEach((item, index) => {
+          let itemName = item.name || `Custom ${capitalize(item.flavor)} Cake`;
+          let desc = item.description || '';
 
-              const itemHtml = `
+          if (item.size) desc += desc ? `, Size: ${item.size}` : `Size: ${item.size}`;
+
+          if (item.type === 'custom' || !item.type) {
+            if (item.color) desc += desc ? `, Color: ${item.color}` : `Color: ${item.color}`;
+            if (item.icing === 'yes') desc += desc ? ', Special Icing' : 'Special Icing';
+            if (item.decorations) desc += desc ? `, ${item.decorations}` : item.decorations;
+          }
+
+          // Fallback image if not present
+          const imgSrc = item.image || "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=200";
+
+          const itemHtml = `
                   <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                       <div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 border border-[#F0EDED]">
                           <img src="${imgSrc}" alt="${itemName}" class="w-full h-full object-cover">
@@ -322,120 +445,121 @@
                       </div>
                   </div>
               `;
-              container.innerHTML += itemHtml;
-          });
-          updateTotals();
+          container.innerHTML += itemHtml;
+        });
+        updateTotals();
       }
-  }
+    }
 
-  function updateQuantity(index, change) {
+    function updateQuantity(index, change) {
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       if (cart[index]) {
-          cart[index].quantity = Math.max(1, (cart[index].quantity || 1) + change);
-          localStorage.setItem('cart', JSON.stringify(cart));
-          loadCart();
+        cart[index].quantity = Math.max(1, (cart[index].quantity || 1) + change);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        loadCart();
       }
-  }
+    }
 
-  function removeItem(index) {
+    function removeItem(index) {
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       cart.splice(index, 1);
       localStorage.setItem('cart', JSON.stringify(cart));
       loadCart();
-  }
+    }
 
-  function updateTotals() {
+    function updateTotals() {
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       const subtotal = cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
-      
+
       let tax = 0;
       let delivery = 0;
       let total = 0;
 
       if (subtotal > 0) {
-          tax = Math.round(subtotal * 0.05);
-          delivery = 6000;
-          total = subtotal + tax + delivery;
+        tax = Math.round(subtotal * 0.05);
+        delivery = 6000;
+        total = subtotal + tax + delivery;
       }
 
       document.getElementById('subtotal').textContent = '₦' + subtotal.toLocaleString();
       document.getElementById('delivery').textContent = '₦' + delivery.toLocaleString();
       document.getElementById('tax').textContent = '₦' + tax.toLocaleString();
       document.getElementById('total').textContent = '₦' + total.toLocaleString();
-  }
+    }
 
-  // Proceed to Checkout with WhatsApp
-  document.getElementById('checkout-button').addEventListener('click', function() {
+    // Proceed to Checkout with WhatsApp
+    document.getElementById('checkout-button').addEventListener('click', function () {
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       if (cart.length === 0) {
-          alert('Your cart is empty!');
-          return;
+        alert('Your cart is empty!');
+        return;
       }
-      
+
       const subtotal = cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
       const tax = Math.round(subtotal * 0.05);
       const delivery = 6000;
       const total = subtotal + tax + delivery;
-      
+
       let message = 'Hello! I would like to order the following items from Flavors Sweet Slice:\n\n';
-      
+
       cart.forEach((item, index) => {
-          let itemName = item.name || `Custom ${capitalize(item.flavor)} Cake`;
-          let desc = '';
-          
-          if (item.description) desc += item.description;
-          if (item.size) desc += desc ? `, Size: ${item.size}` : `Size: ${item.size}`;
-          if (item.type === 'custom' || !item.type) {
-              if (item.color) desc += desc ? `, Color: ${item.color}` : `Color: ${item.color}`;
-              if (item.icing === 'yes') desc += desc ? ', Special Icing' : 'Special Icing';
-              if (item.decorations) desc += desc ? `, Decorations: ${item.decorations}` : `Decorations: ${item.decorations}`;
-          }
-          
-          message += `${index + 1}. ${itemName} - ${desc}\n`;
-          message += `   Quantity: ${item.quantity || 1}, Price: ₦${((item.price || 0) * (item.quantity || 1)).toLocaleString()}\n\n`;
+        let itemName = item.name || `Custom ${capitalize(item.flavor)} Cake`;
+        let desc = '';
+
+        if (item.description) desc += item.description;
+        if (item.size) desc += desc ? `, Size: ${item.size}` : `Size: ${item.size}`;
+        if (item.type === 'custom' || !item.type) {
+          if (item.color) desc += desc ? `, Color: ${item.color}` : `Color: ${item.color}`;
+          if (item.icing === 'yes') desc += desc ? ', Special Icing' : 'Special Icing';
+          if (item.decorations) desc += desc ? `, Decorations: ${item.decorations}` : `Decorations: ${item.decorations}`;
+        }
+
+        message += `${index + 1}. ${itemName} - ${desc}\n`;
+        message += `   Quantity: ${item.quantity || 1}, Price: ₦${((item.price || 0) * (item.quantity || 1)).toLocaleString()}\n\n`;
       });
-      
+
       message += `ORDER SUMMARY:\n`;
       message += `Subtotal: ₦${subtotal.toLocaleString()}\n`;
       message += `Delivery Fee: ₦${delivery.toLocaleString()}\n`;
       message += `Tax (5%): ₦${tax.toLocaleString()}\n`;
       message += `TOTAL: ₦${total.toLocaleString()}\n\n`;
       message += 'Please confirm my order. Thank you!';
-      
+
       const whatsappNumber = '2348139543355';
       const encodedMessage = encodeURIComponent(message);
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-      
+
       window.open(whatsappUrl, '_blank');
-  });
+    });
 
-  window.addEventListener('load', loadCart);
+    window.addEventListener('load', loadCart);
 
-  /* Load profile info */
-  const profile = JSON.parse(localStorage.getItem("userProfile"));
-  if (profile) {
-    const nav = document.querySelector("#nav-auth-section");
-    if (nav) {
-      nav.innerHTML = `
+    /* Load profile info */
+    const profile = JSON.parse(localStorage.getItem("userProfile"));
+    if (profile) {
+      const nav = document.querySelector("#nav-auth-section");
+      if (nav) {
+        nav.innerHTML = `
         <span style="font-family:'Manrope',sans-serif; color:#605e5a; font-size:14px;">Hi, ${profile.full_name || profile.first_name || "User"}</span>
         <button id="logout-btn" class="btn-primary" style="padding:10px 20px;font-size:13px;">Logout</button>
       `;
-    }
-    const mobileAuth = document.querySelector("#mobile-auth-section");
-    if (mobileAuth) {
-      mobileAuth.innerHTML = `
+      }
+      const mobileAuth = document.querySelector("#mobile-auth-section");
+      if (mobileAuth) {
+        mobileAuth.innerHTML = `
         <button id="mobile-logout-btn" class="w-full text-center py-3 rounded-xl border text-[#3D1D16] font-semibold text-sm transition-colors hover:bg-[#e6e2dc]/40" style="font-family:'Inter',sans-serif; border-color:#d5c2bf;">Logout</button>
       `;
-    }
-    
-    document.addEventListener("click", function(e) {
-      if (e.target && (e.target.id === "logout-btn" || e.target.id === "mobile-logout-btn")) {
-        localStorage.removeItem("userProfile");
-        window.location.href = "login.html";
       }
-    });
-  }
-</script>
-<script src="auth.js" defer></script>
+
+      document.addEventListener("click", function (e) {
+        if (e.target && (e.target.id === "logout-btn" || e.target.id === "mobile-logout-btn")) {
+          localStorage.removeItem("userProfile");
+          window.location.href = "login.html";
+        }
+      });
+    }
+  </script>
+  <script src="auth.js" defer></script>
 </body>
+
 </html>
