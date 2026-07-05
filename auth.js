@@ -27,8 +27,8 @@ async function updateNavigation() {
             // DESKTOP - Show "Hi, Name" + Logout
             navSection.innerHTML = `
                 <div class="flex items-center space-x-4">
-                    <span class="text-amber-300 font-medium">Hi, ${firstName}</span>
-                    <button onclick="logout()" class="bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-full transition text-white">
+                    <span class="text-red-300 font-medium">Hi, ${firstName}</span>
+                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition text-white">
                         Logout
                     </button>
                 </div>
@@ -38,8 +38,8 @@ async function updateNavigation() {
             if (mobileSection) {
                 mobileSection.innerHTML = `
                     <div class="border-t border-amber-600 pt-3 mt-3">
-                        <span class="text-amber-300 block mb-2">Hi, ${firstName}</span>
-                        <button onclick="logout()" class="text-amber-300 hover:text-white">
+                        <span class="text-red-300 block mb-2">Hi, ${firstName}</span>
+                        <button onclick="logout()" class="text-red-300 hover:text-white">
                             Logout
                         </button>
                     </div>
