@@ -16,13 +16,13 @@ async function updateNavigation() {
         console.log('Nav section found:', !!navSection);
 
         if (!navSection) {
-            console.error('❌ CRITICAL: nav-auth-section element not found!');
+            console.error(' CRITICAL: nav-auth-section element not found!');
             return;
         }
 
         if (session && session.user) {
             const firstName = session.user.user_metadata.first_name || 'User'; // Use session metadata directly (fallback if missing)
-            console.log('✅ USER LOGGED IN: Showing welcome message');
+            console.log(' USER LOGGED IN: Showing welcome message');
 
             // DESKTOP - Show "Hi, Name" + Logout
             navSection.innerHTML = `
@@ -67,10 +67,10 @@ async function updateNavigation() {
             }
         }
 
-        console.log('✅ Navigation updated successfully!');
+        console.log(' Navigation updated successfully!');
 
     } catch (error) {
-        console.error('❌ Navigation update failed:', error);
+        console.error(' Navigation update failed:', error);
     }
 }
 
