@@ -16,6 +16,7 @@
   <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="supabase-client.js"></script>
+  <script src="cart-sync.js" defer></script>
   <script src="auth.js" defer></script>
 
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -317,6 +318,11 @@
           statusDiv.className = 'mt-5 p-3.5 rounded-xl text-center bg-green-50 text-green-700 text-[13px] font-semibold';
           statusDiv.innerHTML = 'Logged in successfully. Redirecting...';
           statusDiv.classList.remove('hidden');
+
+          // Merge cart: local-wins if non-empty, else pull from server.
+          if (data.user) {
+            await mergeCartOnLogin(data.user.id);
+          }
 
           // Redirect after success
           setTimeout(() => {

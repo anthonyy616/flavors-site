@@ -1,54 +1,59 @@
-// Handles cake design preview with Google Gemini API
+// design.js — calls the Supabase Edge Function, never talks to fal.ai or any
+// model provider directly from the browser.
+
+const PREVIEW_FUNCTION_URL =
+  `${window.env.SUPABASE_URL}/functions/v1/generate-cake-preview`;
 
 async function generateCakePreview() {
-  // Capture values from preview spans
-  const size = document.getElementById('preview-size').innerText.trim() || '6"'; // Default if empty
-  const color = document.getElementById('preview-color').innerText.trim() || 'white';
-  const flavor = document.getElementById('preview-flavor').innerText.trim() || 'vanilla';
-  const icing = document.getElementById('preview-icing').innerText.trim() || 'none';
-  const decorations = document.getElementById('preview-decorations').innerText.trim() || 'none';
+  const btn = document.getElementById('generate-preview-btn');
+  const originalBtnHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<span class="sym">hourglass_top</span> Generating...`;
 
-  // Build prompt for AI, including all details for better accuracy
-  const prompt = `A detailed, appetizing ${size} ${flavor} cake with ${color} color, ${icing} icing, and ${decorations} decorations, high resolution, realistic style`;
-
-  // The rest of the function remains the same (API key, fetch call, etc.)
-  const apiKey = '';
+  const size = document.getElementById('preview-size').innerText.trim() || '6';
+  const color = document.getElementById('preview-color').innerText.trim();
+  const flavor = document.getElementById('preview-flavor').innerText.trim();
+  const icing = document.getElementById('preview-icing').innerText.trim().toLowerCase() === 'yes' ? 'yes' : 'no';
+  const decorations = document.getElementById('preview-decorations').innerText.trim();
 
   try {
-    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent', {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const headers = { 'Content-Type': 'application/json' };
+    if (session) headers['Authorization'] = `Bearer ${session.access_token}`;
+
+    const response = await fetch(PREVIEW_FUNCTION_URL, {
       method: 'POST',
-      headers: {
-        'x-goog-api-key': apiKey,
-        'Content-Type': 'application/json'
-      },
+      headers,
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: prompt
-          }]
-        }]
+        size: size.replace('"', ''),
+        color,
+        flavor,
+        icing,
+        decorations
       })
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      throw new Error(data.error || 'Preview generation failed');
     }
 
-    const data = await response.json();
-    const base64Image = data.candidates[0].content.parts[0].inlineData.data;
-    const mimeType = data.candidates[0].content.parts[0].inlineData.mimeType;
-    const imageUrl = `data:${mimeType};base64,${base64Image}`;
-
     const previewImg = document.getElementById('cake-preview-img');
-    previewImg.src = imageUrl;
+    previewImg.src = data.image_url;
     previewImg.alt = 'Generated cake preview';
     previewImg.style.display = 'block';
+    document.getElementById('cake-preview-placeholder').style.display = 'none';
 
   } catch (error) {
-    console.error('Error generating image:', error);
-    alert('Failed to generate preview. Check console for details.');
+    console.error('Error generating preview:', error);
+    alert(error.message === 'Preview limit reached. Please try again later.'
+      ? error.message
+      : 'Failed to generate preview. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalBtnHtml;
   }
 }
-
 
 document.getElementById('generate-preview-btn').addEventListener('click', generateCakePreview);

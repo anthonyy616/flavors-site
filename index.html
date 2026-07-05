@@ -17,6 +17,7 @@
   <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="supabase-client.js"></script>
+  <script src="cart-sync.js" defer></script>
   <script src="auth.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
   <script src="https://unpkg.com/feather-icons"></script>
@@ -597,6 +598,7 @@
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       cart.push(item);
       localStorage.setItem('cart', JSON.stringify(cart));
+      scheduleCartSync();
       window.location.href = 'cart.html';
     }
 

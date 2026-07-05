@@ -16,6 +16,7 @@
   <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="supabase-client.js"></script>
+  <script src="cart-sync.js" defer></script>
   <script src="auth.js" defer></script>
   <style>
     *,
@@ -460,6 +461,7 @@
       if (cart[index]) {
         cart[index].quantity = Math.max(1, (cart[index].quantity || 1) + change);
         localStorage.setItem('cart', JSON.stringify(cart));
+        scheduleCartSync();
         loadCart();
       }
     }
@@ -468,6 +470,7 @@
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       cart.splice(index, 1);
       localStorage.setItem('cart', JSON.stringify(cart));
+      scheduleCartSync();
       loadCart();
     }
 

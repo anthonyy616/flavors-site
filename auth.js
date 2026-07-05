@@ -76,6 +76,8 @@ async function updateNavigation() {
 
 // Logout function
 async function logout() {
+    // Clear local cart first to prevent shared-device leakage (A.4.6).
+    if (typeof clearLocalCartOnLogout === 'function') clearLocalCartOnLogout();
     await supabaseClient.auth.signOut();
     window.location.href = 'index.html';
 }
