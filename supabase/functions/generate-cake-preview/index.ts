@@ -5,11 +5,17 @@ const FAL_API_KEY = Deno.env.get("FAL_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
+// Optional — if either is unset, Telegram push is silently skipped so the
+// preview feature keeps working even before the bot is configured.
+const TELEGRAM_BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN");
+const TELEGRAM_CHAT_ID = Deno.env.get("TELEGRAM_CHAT_ID");
+
 const GUEST_LIMIT_PER_HOUR = 5;
 const USER_LIMIT_PER_HOUR = 15;
 
 const ALLOWED_FLAVORS = ["Red velvet", "Chocolate", "Vanilla"];
 const MAX_FREE_TEXT_LEN = 150;
+const STORAGE_BUCKET = "cake-previews";
 
 // Very small denylist of instruction-like fragments to strip out of free-text
 // fields. This is defense-in-depth, not a full prompt-injection filter —
@@ -68,6 +74,70 @@ async function hashIp(ip: string): Promise<string> {
   return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
+// Downloads the (temporary) fal.ai hosted image and re-uploads it into our
+// own Supabase Storage bucket, so the URL we hand back to the client is
+// permanent and doesn't depend on fal.ai's CDN retention policy.
+async function persistImageToStorage(
+  falImageUrl: string,
+  admin: ReturnType<typeof createClient>
+): Promise<{ publicUrl: string; storagePath: string }> {
+  const imgResp = await fetch(falImageUrl);
+  if (!imgResp.ok) throw new Error("Failed to fetch generated image from fal.ai");
+
+  const contentType = imgResp.headers.get("content-type") || "image/png";
+  const ext = contentType.includes("jpeg") ? "jpg" : contentType.includes("webp") ? "webp" : "png";
+  const bytes = new Uint8Array(await imgResp.arrayBuffer());
+
+  const storagePath = `previews/${crypto.randomUUID()}.${ext}`;
+
+  const { error: uploadError } = await admin.storage
+    .from(STORAGE_BUCKET)
+    .upload(storagePath, bytes, { contentType, upsert: false });
+
+  if (uploadError) throw new Error(`Storage upload failed: ${uploadError.message}`);
+
+  const { data: publicUrlData } = admin.storage.from(STORAGE_BUCKET).getPublicUrl(storagePath);
+
+  return { publicUrl: publicUrlData.publicUrl, storagePath };
+}
+
+// Fire-and-forget Telegram notification. Failures here are logged but never
+// surfaced to the customer and never block the response — this is an admin
+// convenience, not a critical path.
+async function notifyTelegram(fields: {
+  size: string; color: string; flavor: string; icing: string; decorations: string;
+  imageUrl: string; actorKey: string;
+}) {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+
+  const who = fields.actorKey.startsWith("user:") ? "Logged-in customer" : "Guest";
+  const caption =
+    `🎂 New cake preview generated\n` +
+    `Who: ${who}\n` +
+    `Size: ${fields.size}"\n` +
+    `Flavor: ${fields.flavor}\n` +
+    `Color: ${fields.color || "—"}\n` +
+    `Icing: ${fields.icing}\n` +
+    `Decorations: ${fields.decorations || "—"}`;
+
+  try {
+    const resp = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        photo: fields.imageUrl,
+        caption,
+      }),
+    });
+    if (!resp.ok) {
+      console.error("Telegram notify failed:", await resp.text());
+    }
+  } catch (err) {
+    console.error("Telegram notify error:", err);
+  }
+}
+
 serve(async (req) => {
   const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
@@ -93,12 +163,14 @@ serve(async (req) => {
     const authHeader = req.headers.get("authorization") || "";
     let actorKey: string;
     let limit: number;
+    let userId: string | null = null;
 
     if (authHeader.startsWith("Bearer ")) {
       const token = authHeader.replace("Bearer ", "");
       const { data: { user } } = await admin.auth.getUser(token);
       if (user) {
         actorKey = `user:${user.id}`;
+        userId = user.id;
         limit = USER_LIMIT_PER_HOUR;
       } else {
         const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
@@ -141,15 +213,55 @@ serve(async (req) => {
     }
 
     const falData = await falResponse.json();
-    const imageUrl = falData?.images?.[0]?.url;
+    const falImageUrl = falData?.images?.[0]?.url;
 
-    if (!imageUrl) {
+    if (!falImageUrl) {
       return new Response(JSON.stringify({ error: "Preview generation failed" }), { status: 502, headers: corsHeaders });
+    }
+
+    // Re-host the image in our own Storage bucket so the URL we return is
+    // permanent, then log the generation and notify admins. If persistence
+    // fails, fall back to the (temporary) fal.ai URL rather than failing the
+    // whole request — the customer still gets to see their preview.
+    let finalImageUrl = falImageUrl;
+    let storagePath: string | null = null;
+
+    try {
+      const persisted = await persistImageToStorage(falImageUrl, admin);
+      finalImageUrl = persisted.publicUrl;
+      storagePath = persisted.storagePath;
+    } catch (err) {
+      console.error("Storage persistence failed, falling back to fal.ai URL:", err);
     }
 
     await recordUsage(actorKey, admin);
 
-    return new Response(JSON.stringify({ image_url: imageUrl }), {
+    // Log every generation regardless of whether persistence succeeded, so
+    // admins have a full record even on the rare storage-failure fallback.
+    await admin.from("cake_previews").insert({
+      user_id: userId,
+      actor_key: actorKey,
+      size: String(size).replace('"', ''),
+      color: color || null,
+      flavor,
+      icing,
+      decorations: decorations || null,
+      storage_path: storagePath,
+      image_url: finalImageUrl,
+    });
+
+    // Fire-and-forget — do not await-block the response on Telegram latency.
+    notifyTelegram({
+      size: String(size).replace('"', ''),
+      color: color || "",
+      flavor,
+      icing,
+      decorations: decorations || "",
+      imageUrl: finalImageUrl,
+      actorKey,
+    });
+
+    return new Response(JSON.stringify({ image_url: finalImageUrl }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
