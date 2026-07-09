@@ -1157,6 +1157,127 @@
       });
     });
 
+    /* ── Wishlist functionality (Phase 7) ── */
+    let _session = null;
+    let _wishlist = new Set();
+
+    function makeMenuItemSlug(name) {
+      return String(name || '')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    async function initWishlist() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      _session = session;
+
+      if (session) {
+        const { data } = await supabaseClient
+          .from('wishlists')
+          .select('item_slug')
+          .eq('user_id', session.user.id);
+        
+        if (data) {
+          data.forEach(row => _wishlist.add(row.item_slug));
+        }
+      }
+
+      document.querySelectorAll('.cake-card').forEach(card => {
+        const slug = card.dataset.slug || makeMenuItemSlug(card.dataset.name);
+        card.dataset.slug = slug;
+        const imgContainer = card.querySelector('.relative.h-56');
+        
+        const btn = document.createElement('button');
+        btn.className = 'absolute top-4 left-4 w-8 h-8 rounded-full bg-white/80 backdrop-blur flex items-center justify-center transition-colors shadow-sm group';
+        btn.innerHTML = `
+          <span class="sym heart-icon" style="font-size:20px; transition: color 0.2s; color: ${_wishlist.has(slug) ? '#C8102E' : '#d5c2bf'}; font-variation-settings: 'FILL' ${_wishlist.has(slug) ? '1' : '0'};">favorite</span>
+          <span class="absolute left-full ml-2 px-2 py-1 bg-[#3D1D16] text-white text-[11px] rounded opacity-0 pointer-events-none whitespace-nowrap transition-opacity auth-tooltip z-10" style="font-family:'Inter',sans-serif;">Log in to save</span>
+        `;
+        
+        btn.addEventListener('mouseenter', () => {
+          if (!_session) btn.querySelector('.auth-tooltip').classList.replace('opacity-0', 'opacity-100');
+        });
+        btn.addEventListener('mouseleave', () => {
+          if (!_session) btn.querySelector('.auth-tooltip').classList.replace('opacity-100', 'opacity-0');
+        });
+
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (!_session) {
+            showToast('Please log in to save to wishlist');
+            setTimeout(() => window.location.href = 'login.html?redirect=menu.html', 1500);
+            return;
+          }
+
+          const heart = btn.querySelector('.heart-icon');
+          const isWished = _wishlist.has(slug);
+          
+          if (isWished) {
+            _wishlist.delete(slug);
+            heart.style.color = '#d5c2bf';
+            heart.style.fontVariationSettings = "'FILL' 0";
+            await supabaseClient.from('wishlists').delete().match({ user_id: _session.user.id, item_slug: slug });
+          } else {
+            _wishlist.add(slug);
+            heart.style.color = '#C8102E';
+            heart.style.fontVariationSettings = "'FILL' 1";
+            await supabaseClient
+              .from('wishlists')
+              .upsert({ user_id: _session.user.id, item_slug: slug }, { onConflict: 'user_id,item_slug' });
+            showToast('Saved to wishlist!');
+          }
+        });
+
+        imgContainer.appendChild(btn);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initWishlist);
+
+    /* ── Review Ratings functionality (Phase 8) ── */
+    async function loadRatings() {
+      const { data: reviews, error } = await supabaseClient
+        .from('reviews')
+        .select('item_slug, rating');
+        
+      if (error || !reviews) return;
+
+      // Group and average ratings
+      const ratingsMap = {};
+      reviews.forEach(r => {
+        if (!ratingsMap[r.item_slug]) ratingsMap[r.item_slug] = { sum: 0, count: 0 };
+        ratingsMap[r.item_slug].sum += r.rating;
+        ratingsMap[r.item_slug].count += 1;
+      });
+
+      // Inject into cards
+      document.querySelectorAll('.cake-card').forEach(card => {
+        const slug = card.dataset.name;
+        if (ratingsMap[slug]) {
+          const avg = (ratingsMap[slug].sum / ratingsMap[slug].count).toFixed(1);
+          const count = ratingsMap[slug].count;
+          
+          const ratingHtml = `
+            <div class="flex items-center gap-1 mb-2 mt-[-10px]">
+              <span class="sym" style="font-size:14px; color:#F59E0B; font-variation-settings: 'FILL' 1;">star</span>
+              <span class="text-[13px] font-semibold text-[#3D1D16]" style="font-family:'Inter',sans-serif;">${avg}</span>
+              <span class="text-[12px] text-[#605e5a]" style="font-family:'Inter',sans-serif;">(${count})</span>
+            </div>
+          `;
+          
+          // Insert after the title
+          const titleEl = card.querySelector('h3');
+          if (titleEl) {
+            titleEl.insertAdjacentHTML('afterend', ratingHtml);
+          }
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadRatings);
+
     /* ── Toast ─── */
     function showToast(msg) {
       const t = document.getElementById('toast');

@@ -418,12 +418,25 @@
           </div>
 
           <!-- Decorations -->
-          <div class="mb-4">
+          <div class="mb-8">
             <label for="decorations" class="block text-[14px] font-bold text-[#3D1D16] mb-3"
               style="font-family:'Inter',sans-serif;">Additional Decorations</label>
             <textarea id="decorations" name="decorations" rows="3"
               placeholder="Describe any additional decorations (e.g., flowers, messages, figurines)"
               class="input-field resize-none"></textarea>
+          </div>
+
+          <!-- Reference Photo -->
+          <div class="mb-4">
+            <label for="reference-photo" class="block text-[14px] font-bold text-[#3D1D16] mb-3"
+              style="font-family:'Inter',sans-serif;">Reference Photo (Optional)</label>
+            <input type="file" id="reference-photo" accept="image/png, image/jpeg, image/webp"
+              class="block w-full text-[14px] text-[#605e5a]
+              file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
+              file:text-[13px] file:font-semibold file:bg-[#3D1D16] file:text-white
+              hover:file:bg-[#230904] transition-colors cursor-pointer border border-[#d5c2bf] rounded-xl p-1
+              focus:ring-[#C8102E] focus:border-[#C8102E]">
+            <p class="text-[12px] text-[#605e5a] mt-2" style="font-family:'Inter',sans-serif;">Upload an image to guide our bakers (Max 2MB)</p>
           </div>
 
         </div>
@@ -674,59 +687,106 @@
     }
 
     // Add to Cart functionality
-    document.getElementById('cake-design-form').addEventListener('submit', function (e) {
+    document.getElementById('cake-design-form').addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      // Get current selections
-      const size = document.querySelector('input[name="size"]:checked').value;
-      const color = document.getElementById('color').value;
-      const flavor = document.querySelector('input[name="flavor"]:checked').value;
-      const icing = document.querySelector('input[name="icing"]:checked').value;
-      const decorations = document.getElementById('decorations').value;
-      const imageSrc = document.getElementById('cake-preview-img').src;
+      const btn = document.getElementById('add-to-cart-submit');
+      if (!btn) return;
+      const originalBtnHTML = btn.innerHTML;
+      btn.innerHTML = `<span class="sym animate-spin" style="animation: spin 1s linear infinite;">refresh</span> Processing...`;
+      btn.disabled = true;
 
-      // Calculate price
-      let basePrice = 0;
-      switch (size) {
-        case '5': basePrice = 15000; break;
-        case '6': basePrice = 26000; break;
-        case '7': basePrice = 34000; break;
-        case '8': basePrice = 42500; break;
-        case '9': basePrice = 47500; break;
-        case '10': basePrice = 56000; break;
-        case '11': basePrice = 68500; break;
-        case '12': basePrice = 72000; break;
-        case '13': basePrice = 80500; break;
-        case '14': basePrice = 85000; break;
+      try {
+        // Get current selections
+        const size = document.querySelector('input[name="size"]:checked').value;
+        const color = document.getElementById('color').value;
+        const flavor = document.querySelector('input[name="flavor"]:checked').value;
+        const icing = document.querySelector('input[name="icing"]:checked').value;
+        const decorations = document.getElementById('decorations').value;
+        const imageSrc = document.getElementById('cake-preview-img').src;
+
+        // Calculate price
+        let basePrice = 0;
+        switch (size) {
+          case '5': basePrice = 15000; break;
+          case '6': basePrice = 26000; break;
+          case '7': basePrice = 34000; break;
+          case '8': basePrice = 42500; break;
+          case '9': basePrice = 47500; break;
+          case '10': basePrice = 56000; break;
+          case '11': basePrice = 68500; break;
+          case '12': basePrice = 72000; break;
+          case '13': basePrice = 80500; break;
+          case '14': basePrice = 85000; break;
+        }
+        const icingPrice = icing === 'yes' ? 5500 : 0;
+        let decorationPrice = 0;
+        if (decorations.length > 0) {
+          decorationPrice = Math.min(2000, Math.max(500, decorations.length * 20));
+        }
+        const price = basePrice + icingPrice + decorationPrice;
+
+        // Handle Reference Photo Upload
+        let reference_photo_url = null;
+        const photoInput = document.getElementById('reference-photo');
+        if (photoInput && photoInput.files.length > 0) {
+          const file = photoInput.files[0];
+          
+          if (file.size > 2 * 1024 * 1024) {
+             throw new Error("Reference photo exceeds 2MB limit.");
+          }
+
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+          
+          // Optional: attach user ID to path if logged in, otherwise anonymous path
+          const { data: { session } } = await supabaseClient.auth.getSession();
+          const userId = session ? session.user.id : 'guest';
+          const filePath = `${userId}/${fileName}`;
+
+          const { data: uploadData, error: uploadError } = await supabaseClient.storage
+            .from('reference-photos')
+            .upload(filePath, file, { cacheControl: '3600', upsert: false });
+
+          if (uploadError) {
+            throw new Error(`Photo upload failed: ${uploadError.message}`);
+          }
+
+          const { data: publicUrlData } = supabaseClient.storage
+            .from('reference-photos')
+            .getPublicUrl(filePath);
+
+          reference_photo_url = publicUrlData.publicUrl;
+        }
+
+        // Create item object
+        const item = {
+          type: 'custom',
+          size,
+          color,
+          flavor,
+          icing,
+          decorations,
+          price,
+          quantity: 1,
+          image: (imageSrc && imageSrc !== window.location.href) ? imageSrc : null,
+          reference_photo_url
+        };
+
+        // Add to localStorage cart
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.push(item);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        scheduleCartSync();
+
+        // Redirect to cart
+        window.location.href = 'cart.html';
+      } catch (error) {
+        console.error("Cart error:", error);
+        alert(error.message);
+        btn.innerHTML = originalBtnHTML;
+        btn.disabled = false;
       }
-      const icingPrice = icing === 'yes' ? 5500 : 0;
-      let decorationPrice = 0;
-      if (decorations.length > 0) {
-        decorationPrice = Math.min(2000, Math.max(500, decorations.length * 20));
-      }
-      const price = basePrice + icingPrice + decorationPrice;
-
-      // Create item object
-      const item = {
-        type: 'custom',
-        size,
-        color,
-        flavor,
-        icing,
-        decorations,
-        price,
-        quantity: 1,
-        image: (imageSrc && imageSrc !== window.location.href) ? imageSrc : null
-      };
-
-      // Add to localStorage cart
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
-      cart.push(item);
-      localStorage.setItem('cart', JSON.stringify(cart));
-      scheduleCartSync();
-
-      // Redirect to cart
-      window.location.href = 'cart.html';
     });
 
     /* Load profile info */
